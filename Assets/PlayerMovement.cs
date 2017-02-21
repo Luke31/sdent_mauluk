@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
 	void Start ()
 	{
 		rb = GetComponent<Rigidbody2D> ();
-		target = transform.GetChild (1).gameObject;
+		target = GameObject.Find("target");
 
 		lineRenderer = GetComponentInChildren<LineRenderer> ();
 
@@ -45,18 +45,28 @@ public class PlayerMovement : MonoBehaviour
 	void Update ()
 	{
 		// Update Aim
-		if (Input.GetButton ("AimLeft")) {
+		if (!ropeActive && Input.GetButton ("AimLeft")) {
 			aimTemp = Quaternion.AngleAxis (aimSpeed, Vector3.forward) * aimDirection;
 			aimDirection.Set (aimTemp.x, aimTemp.y);
 			aimDirection.Normalize ();
 		}
 
-		if (Input.GetButton ("AimRight")) {
+		if (!ropeActive && Input.GetButton ("AimRight")) {
 			aimTemp = Quaternion.AngleAxis (-aimSpeed, Vector3.forward) * aimDirection;
 			aimDirection.Set (aimTemp.x, aimTemp.y);
 			aimDirection.Normalize ();
 		}
 
+		// Rope Swing
+		if (ropeActive && Input.GetButton ("AimLeft")) {
+			rb.AddForce (Vector2.left);
+		}
+
+		if (ropeActive && Input.GetButton ("AimRight")) {
+			rb.AddForce (Vector2.right);
+		}
+
+		// Manage Rope
 		if (ropeActive && Input.GetButton ("RopeIn")) {
 			hinge.distance -= 0.2f;
 		}
@@ -78,10 +88,16 @@ public class PlayerMovement : MonoBehaviour
 		// Jump (testing)
 		if (Input.GetButtonDown ("Jump")) {
 			if (ropeActive) {
-				ropeActive = false;
 				Destroy (hinge);
+				ropeActive = false;
+				target.GetComponent<MeshRenderer> ().enabled = true;
+				lineRenderer.startWidth = 0;
+				lineRenderer.endWidth = 0;
 			} else {
 				ropeActive = true;
+				target.GetComponent<MeshRenderer> ().enabled = false;
+				lineRenderer.startWidth = 0.1f;
+				lineRenderer.endWidth = 0.1f;
 				RaycastHit2D hit;
 				hit = Physics2D.Raycast (aimPosition, aimDirection);
 
