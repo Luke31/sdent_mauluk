@@ -9,6 +9,10 @@ public class PlayerMovement : MonoBehaviour
 	public float aimSpeed = 10;
 
 	Rigidbody2D rb;
+	CircleCollider2D playerCollider;
+
+	PhysicsMaterial2D matBouncy;
+	PhysicsMaterial2D matStatic;
 
 	GameObject target;
 	Vector2 aimDirection;
@@ -29,6 +33,10 @@ public class PlayerMovement : MonoBehaviour
 		target = GameObject.Find("target");
 
 		lineRenderer = GetComponentInChildren<LineRenderer> ();
+		playerCollider = GetComponentInChildren<CircleCollider2D> ();
+
+		matBouncy = (PhysicsMaterial2D) Resources.Load ("PlayerBouncy");
+		matStatic = (PhysicsMaterial2D) Resources.Load ("PlayerStatic");
 
 		linePoints = new Vector3[2];
 		for (int i = 0; i < linePoints.Length; i++) {
@@ -93,11 +101,14 @@ public class PlayerMovement : MonoBehaviour
 				target.GetComponent<MeshRenderer> ().enabled = true;
 				lineRenderer.startWidth = 0;
 				lineRenderer.endWidth = 0;
+				playerCollider.sharedMaterial = matStatic;
 			} else {
 				ropeActive = true;
 				target.GetComponent<MeshRenderer> ().enabled = false;
 				lineRenderer.startWidth = 0.1f;
 				lineRenderer.endWidth = 0.1f;
+				playerCollider.sharedMaterial = matBouncy;
+
 				RaycastHit2D hit;
 				hit = Physics2D.Raycast (aimPosition, aimDirection);
 
