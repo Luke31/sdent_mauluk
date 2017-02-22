@@ -601,7 +601,7 @@ GameObject:
   - component: {fileID: 1149448669}
   - component: {fileID: 1149448668}
   - component: {fileID: 1149448666}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -643,7 +643,7 @@ TrailRenderer:
   m_Time: 0.5
   m_Parameters:
     serializedVersion: 2
-    widthMultiplier: 1
+    widthMultiplier: 2
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -708,9 +708,9 @@ TrailRenderer:
       m_NumAlphaKeys: 2
     numCornerVertices: 0
     numCapVertices: 0
-    alignment: 0
+    alignment: 1
     textureMode: 0
-  m_MinVertexDistance: 0.1
+  m_MinVertexDistance: 0.001
   m_Autodestruct: 0
 --- !u!23 &1149448668
 MeshRenderer:
@@ -856,7 +856,7 @@ GameObject:
   - component: {fileID: 1606278643}
   - component: {fileID: 1606278645}
   - component: {fileID: 1606278644}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1006,7 +1006,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1818577574}
   - component: {fileID: 1818577575}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1135,7 +1135,7 @@ GameObject:
   - component: {fileID: 1952089911}
   - component: {fileID: 1952089910}
   - component: {fileID: 1952089909}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1156,6 +1156,8 @@ MonoBehaviour:
   jumpForce: 5
   aimDistance: 1
   aimSpeed: 5
+  ropeWidth: 0.1
+  ropeSplitEpsilon: 0.1
 --- !u!50 &1952089910
 Rigidbody2D:
   serializedVersion: 4
@@ -1197,7 +1199,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1952089908}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.72, y: 3.98, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 1149448670}

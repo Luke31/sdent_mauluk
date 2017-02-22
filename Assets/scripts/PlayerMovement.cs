@@ -7,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
 	public float jumpForce = 1;
 	public float aimDistance = 1;
 	public float aimSpeed = 10;
+	public float ropeWidth = 0.1f;
+	public float ropeSplitEpsilon = 0.1f;
 
 	Rigidbody2D rb;
 	CircleCollider2D playerCollider;
@@ -38,15 +40,19 @@ public class PlayerMovement : MonoBehaviour
 		matBouncy = (PhysicsMaterial2D) Resources.Load ("PlayerBouncy");
 		matStatic = (PhysicsMaterial2D) Resources.Load ("PlayerStatic");
 
-		linePoints = new Vector3[2];
-		for (int i = 0; i < linePoints.Length; i++) {
-			linePoints [i] = Vector3.one;
-		}
+		resetRope ();
 
 		aimDirection = new Vector2 (1, 1).normalized;
 		aimPosition = new Vector3 (1, 1, 0);
 		target.transform.localPosition = aimPosition;
 		target.transform.SetParent (null);
+	}
+
+	void resetRope() {
+		linePoints = new Vector3[2];
+		for (int i = 0; i < linePoints.Length; i++) {
+			linePoints [i] = Vector3.zero;
+		}
 	}
 	
 	// Update is called once per frame
@@ -91,8 +97,6 @@ public class PlayerMovement : MonoBehaviour
 
 		linePoints [0] = transform.position;
 
-		lineRenderer.SetPositions (linePoints);
-
 		// Jump (testing)
 		if (Input.GetButtonDown ("Jump")) {
 			if (ropeActive) {
@@ -102,13 +106,8 @@ public class PlayerMovement : MonoBehaviour
 				lineRenderer.startWidth = 0;
 				lineRenderer.endWidth = 0;
 				playerCollider.sharedMaterial = matStatic;
+				resetRope ();
 			} else {
-				ropeActive = true;
-				target.GetComponent<MeshRenderer> ().enabled = false;
-				lineRenderer.startWidth = 0.1f;
-				lineRenderer.endWidth = 0.1f;
-				playerCollider.sharedMaterial = matBouncy;
-
 				RaycastHit2D hit;
 				hit = Physics2D.Raycast (aimPosition, aimDirection);
 
@@ -116,18 +115,56 @@ public class PlayerMovement : MonoBehaviour
 					GameObject.Find ("rayTarget").transform.position = hit.point;
 					linePoints [1].x = hit.point.x;
 					linePoints [1].y = hit.point.y;
+
+					ropeActive = true;
+					target.GetComponent<MeshRenderer> ().enabled = false;
+					lineRenderer.startWidth = ropeWidth;
+					lineRenderer.endWidth = ropeWidth;
+					playerCollider.sharedMaterial = matBouncy;
+
+					hinge = gameObject.AddComponent (typeof(DistanceJoint2D)) as DistanceJoint2D;
+					hinge.enableCollision = true;
+					hinge.autoConfigureConnectedAnchor = false;
+					hinge.autoConfigureDistance = false;
+					hinge.connectedAnchor = linePoints [1];
+					hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
 				}
-					
-				hinge = gameObject.AddComponent (typeof(DistanceJoint2D)) as DistanceJoint2D;
-				hinge.enableCollision = true;
-				hinge.autoConfigureConnectedAnchor = false;
-				hinge.autoConfigureDistance = false;
-				hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
 			}
 		}
 
+		// check for splits in the rope
 		if (ropeActive) {
-			hinge.connectedAnchor = linePoints [1];
+			RaycastHit2D hit;
+			Vector2 ropeDir = linePoints [1] - linePoints [0];
+
+			int layerMask = 1 << 8;
+			layerMask = ~layerMask;
+
+			hit = Physics2D.Raycast (transform.position, ropeDir, ropeDir.magnitude, layerMask);
+
+			if(hit.collider != null) {
+				Vector3 hitPoint = new Vector3 (hit.point.x, hit.point.y);
+				GameObject.Find ("rayTarget").transform.position = hit.point;
+				// A new point in between (far away, enough to warrant a split in the rope)
+				if ((linePoints [1] - hitPoint).magnitude > ropeSplitEpsilon) {
+					Vector3[] newPoints = new Vector3[linePoints.Length + 1];
+
+					newPoints [0] = linePoints [0]; // player
+					newPoints [1] = hitPoint; 		// new anchor
+					newPoints [2] = linePoints [1];	// last anchor
+
+					for (int i = 2; i < linePoints.Length; i++) {
+						newPoints [i + 1] = linePoints [i];
+					}
+
+					linePoints = newPoints;
+
+					hinge.connectedAnchor = linePoints [1];
+					hinge.distance = Vector3.Distance (transform.position, hitPoint);
+				}
+			}
+
+			lineRenderer.SetPositions (linePoints);
 		}
 	}
 }
