@@ -6,10 +6,12 @@ public class PlayerMovement : MonoBehaviour
 {
 	public float aimDistance = 1;
 	public float aimSpeed = 10;
+	public float aimMaxAngle = 90f;
 	public float ropeWidth = 0.1f;
 	public float ropeSplitEpsilon = 0.9f;
 	public float ropeMinLength = 0.5f;
 	public float ropeFeedSpeed = 0.1f;
+	public float ropeSwingForce = 0.6f;
 
 	Rigidbody2D rb;
 	CircleCollider2D playerCollider;
@@ -59,6 +61,9 @@ public class PlayerMovement : MonoBehaviour
 		for (int i = 0; i < linePoints.Length; i++) {
 			linePoints [i] = Vector3.zero;
 		}
+			
+		lineRenderer.numPositions = linePoints.Length;
+		lineRenderer.SetPositions (linePoints);
 	}
 	
 	// Update is called once per frame
@@ -68,14 +73,20 @@ public class PlayerMovement : MonoBehaviour
 		// Update Aim
 		if (!ropeActive && Input.GetButton ("AimLeft")) {
 			aimTemp = Quaternion.AngleAxis (aimSpeed, Vector3.forward) * aimDirection;
-			aimDirection.Set (aimTemp.x, aimTemp.y);
-			aimDirection.Normalize ();
+
+			if (Vector2.Angle (aimTemp, Vector2.up) < aimMaxAngle) {
+				aimDirection.Set (aimTemp.x, aimTemp.y);
+				aimDirection.Normalize ();
+			}
 		}
 
 		if (!ropeActive && Input.GetButton ("AimRight")) {
 			aimTemp = Quaternion.AngleAxis (-aimSpeed, Vector3.forward) * aimDirection;
-			aimDirection.Set (aimTemp.x, aimTemp.y);
-			aimDirection.Normalize ();
+
+			if (Vector2.Angle (aimTemp, Vector2.up) < aimMaxAngle) {
+				aimDirection.Set (aimTemp.x, aimTemp.y);
+				aimDirection.Normalize ();
+			}
 		}
 
 		// update aim target
@@ -86,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
 		linePoints [0] = transform.position;
 		Vector2 ropeDir = linePoints [1] - linePoints [0];
 
-		Vector2 left = -Vector3.Cross (ropeDir, Vector3.forward).normalized;
+		Vector2 left = -Vector3.Cross (ropeDir, Vector3.forward).normalized * ropeSwingForce;
 		Vector2 right = -left;
 
 		// Rope Swing
@@ -113,46 +124,6 @@ public class PlayerMovement : MonoBehaviour
 			}
 		}
 
-
-		// Jump (testing)
-		if (Input.GetButtonDown ("Jump")) {
-			if (ropeActive) {
-				Destroy (hinge);
-				ropeActive = false;
-				target.GetComponent<MeshRenderer> ().enabled = true;
-				lineRenderer.startWidth = 0;
-				lineRenderer.endWidth = 0;
-				playerCollider.sharedMaterial = matStatic;
-				resetRope ();
-			} else {
-				RaycastHit2D hit;
-				hit = Physics2D.Raycast (aimPosition, aimDirection);
-				if (hit.collider != null) {
-
-					Vector2 hullPoint = hit.collider.bounds.ClosestPoint (hit.point);
-					Vector3 hitPoint = new Vector3 (hullPoint.x, hullPoint.y);
-
-					if (Vector2.Distance (hitPoint, transform.position) > ropeMinLength) {
-						linePoints [1].x = hitPoint.x;
-						linePoints [1].y = hitPoint.y;
-
-						ropeActive = true;
-						target.GetComponent<MeshRenderer> ().enabled = false;
-						lineRenderer.startWidth = ropeWidth;
-						lineRenderer.endWidth = ropeWidth;
-						playerCollider.sharedMaterial = matBouncy;
-
-						hinge = gameObject.AddComponent (typeof(DistanceJoint2D)) as DistanceJoint2D;
-						hinge.enableCollision = true;
-						hinge.autoConfigureConnectedAnchor = false;
-						hinge.autoConfigureDistance = false;
-						hinge.connectedAnchor = linePoints [1];
-						hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
-					}
-				}
-			}
-		}
-			
 		// check for splits in the rope
 		if (ropeActive) {
 			RaycastHit2D hitSplit;
@@ -205,6 +176,45 @@ public class PlayerMovement : MonoBehaviour
 
 					hinge.connectedAnchor = linePoints [1];
 					hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
+				}
+			}
+		}
+
+		// Jump (testing)
+		if (Input.GetButtonDown ("Jump")) {
+			if (ropeActive) {
+				Destroy (hinge);
+				ropeActive = false;
+				target.GetComponent<MeshRenderer> ().enabled = true;
+				lineRenderer.startWidth = 0;
+				lineRenderer.endWidth = 0;
+				playerCollider.sharedMaterial = matStatic;
+				resetRope ();
+			} else {
+				RaycastHit2D hit;
+				hit = Physics2D.Raycast (aimPosition, aimDirection);
+				if (hit.collider != null) {
+
+					Vector2 hullPoint = hit.collider.bounds.ClosestPoint (hit.point);
+					Vector3 hitPoint = new Vector3 (hullPoint.x, hullPoint.y);
+
+					if (Vector2.Distance (hitPoint, transform.position) > ropeMinLength) {
+						linePoints [1].x = hitPoint.x;
+						linePoints [1].y = hitPoint.y;
+
+						ropeActive = true;
+						target.GetComponent<MeshRenderer> ().enabled = false;
+						lineRenderer.startWidth = ropeWidth;
+						lineRenderer.endWidth = ropeWidth;
+						playerCollider.sharedMaterial = matBouncy;
+
+						hinge = gameObject.AddComponent (typeof(DistanceJoint2D)) as DistanceJoint2D;
+						hinge.enableCollision = true;
+						hinge.autoConfigureConnectedAnchor = false;
+						hinge.autoConfigureDistance = false;
+						hinge.connectedAnchor = linePoints [1];
+						hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
+					}
 				}
 			}
 		}
