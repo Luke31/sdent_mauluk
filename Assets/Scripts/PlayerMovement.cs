@@ -35,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
 	void Start ()
 	{
 		rb = GetComponent<Rigidbody2D> ();
-		target = GameObject.Find ("target");
+		target = GameObject.Find ("Target");
 
 		lineRenderer = GetComponentInChildren<LineRenderer> ();
 		playerCollider = GetComponentInChildren<CircleCollider2D> ();
@@ -51,7 +51,6 @@ public class PlayerMovement : MonoBehaviour
 		aimDirection = new Vector2 (1, 1).normalized;
 		aimPosition = new Vector3 (1, 1, 0);
 		target.transform.localPosition = aimPosition;
-		target.transform.SetParent (null);
 	}
 
 	void resetRope ()
@@ -134,7 +133,6 @@ public class PlayerMovement : MonoBehaviour
 					Vector3 hitPoint = new Vector3 (hullPoint.x, hullPoint.y);
 
 					if (Vector2.Distance (hitPoint, transform.position) > ropeMinLength) {
-						GameObject.Find ("rayTarget").transform.position = hitPoint;
 						linePoints [1].x = hitPoint.x;
 						linePoints [1].y = hitPoint.y;
 
