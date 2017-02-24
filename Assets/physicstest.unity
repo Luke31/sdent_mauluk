@@ -99,7 +99,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 695964128}
-  - component: {fileID: 695964129}
+  - component: {fileID: 695964130}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -120,7 +120,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &695964129
+--- !u!114 &695964130
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -128,9 +128,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 695964127}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f32d95484c9f14930a64344372ee230b, type: 3}
+  m_Script: {fileID: 11500000, guid: 52393f0f67f975946aef52ebfec69654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelRoot: {fileID: 695964127}
+  offset: {x: -2, y: 2, z: 0}
+  tileSize: 1
+  tilePreFabs:
+  - {fileID: 4051720744637826, guid: 3ad0797e6685c449f984974774a8c04a, type: 2}
+  - {fileID: 4999167484275708, guid: 8e7f47b662618e949a3a114a53ce06fc, type: 2}
 --- !u!1 &794349793
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,7 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1952089908}
-  offset: {x: 0, y: 3.23, z: -10}
+  offset: {x: 0, y: 0, z: -10}
 --- !u!1 &797768102
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,7 +732,7 @@ MonoBehaviour:
   aimSpeed: 5
   ropeWidth: 0.1
   ropeSplitEpsilon: 0.1
-  ropeMinLength: 0.2
+  ropeMinLength: 0.5
   ropeFeedSpeed: 0.1
 --- !u!50 &1952089910
 Rigidbody2D:
