@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-	public float jumpForce = 1;
 	public float aimDistance = 1;
 	public float aimSpeed = 10;
 	public float ropeWidth = 0.1f;
-	public float ropeSplitEpsilon = 0.4f;
+	public float ropeSplitEpsilon = 0.9f;
+	public float ropeFeedSpeed = 0.1f;
 
 	Rigidbody2D rb;
 	CircleCollider2D playerCollider;
@@ -24,21 +24,26 @@ public class PlayerMovement : MonoBehaviour
 	DistanceJoint2D hinge;
 
 	bool ropeActive = false;
+	int layerMask;
 
 	LineRenderer lineRenderer;
 	Vector3[] linePoints;
+	Vector2[] lineAngles;
 
 	// Use this for initialization
 	void Start ()
 	{
 		rb = GetComponent<Rigidbody2D> ();
-		target = GameObject.Find("target");
+		target = GameObject.Find ("target");
 
 		lineRenderer = GetComponentInChildren<LineRenderer> ();
 		playerCollider = GetComponentInChildren<CircleCollider2D> ();
 
-		matBouncy = (PhysicsMaterial2D) Resources.Load ("PlayerBouncy");
-		matStatic = (PhysicsMaterial2D) Resources.Load ("PlayerStatic");
+		matBouncy = (PhysicsMaterial2D)Resources.Load ("PlayerBouncy");
+		matStatic = (PhysicsMaterial2D)Resources.Load ("PlayerStatic");
+
+		layerMask = LayerMask.GetMask ("Player");
+		layerMask = ~layerMask;
 
 		resetRope ();
 
@@ -48,7 +53,8 @@ public class PlayerMovement : MonoBehaviour
 		target.transform.SetParent (null);
 	}
 
-	void resetRope() {
+	void resetRope ()
+	{
 		linePoints = new Vector3[2];
 		for (int i = 0; i < linePoints.Length; i++) {
 			linePoints [i] = Vector3.zero;
@@ -82,11 +88,11 @@ public class PlayerMovement : MonoBehaviour
 
 		// Manage Rope
 		if (ropeActive && Input.GetButton ("RopeIn")) {
-			hinge.distance -= 0.2f;
+			hinge.distance -= ropeFeedSpeed;
 		}
 
 		if (ropeActive && Input.GetButton ("RopeOut")) {
-			hinge.distance += 0.2f;
+			hinge.distance += ropeFeedSpeed;
 		}
 
 
@@ -134,20 +140,17 @@ public class PlayerMovement : MonoBehaviour
 
 		linePoints [0] = transform.position;
 
-
 		// check for splits in the rope
 		if (ropeActive) {
 			RaycastHit2D hitSplit;
 			RaycastHit2D hitLast;
 			Vector2 ropeDir = linePoints [1] - linePoints [0];
 
-			int layerMask = 1 << 8;
-			layerMask = ~layerMask;
-
 			hitSplit = Physics2D.Raycast (transform.position, ropeDir, ropeDir.magnitude - 0.1f, layerMask);
 
 			if (hitSplit.collider != null) {
-				Vector3 hitPoint = new Vector3 (hitSplit.point.x, hitSplit.point.y);
+				Vector2 hullPoint = hitSplit.collider.bounds.ClosestPoint (hitSplit.point);
+				Vector3 hitPoint = new Vector3 (hullPoint.x, hullPoint.y);
 				// A new point in between (far away, enough to warrant a split in the rope)
 				if ((linePoints [1] - hitPoint).magnitude > ropeSplitEpsilon) {
 					Vector3[] newPoints = new Vector3[linePoints.Length + 1];
@@ -172,7 +175,11 @@ public class PlayerMovement : MonoBehaviour
 				Vector2 lastDir = linePoints [2] - linePoints [0];
 				hitLast = Physics2D.Raycast (transform.position, lastDir, lastDir.magnitude - 0.1f, layerMask);
 
-				if(hitLast.collider == null) {// We see both last points, release one
+				Vector2 ab = linePoints [1] - linePoints [0];
+				Vector2 bc = linePoints [2] - linePoints [1];
+				Vector2 ac = linePoints [2] - linePoints [0];
+
+				if (hitLast.collider == null && Mathf.Abs(ab.magnitude + bc.magnitude - ac.magnitude) < ropeSplitEpsilon) {// We see both last points, maybe release one
 					Vector3[] newPoints = new Vector3[linePoints.Length - 1];
 
 					newPoints [0] = linePoints [0]; // player
