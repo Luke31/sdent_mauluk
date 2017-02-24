@@ -184,9 +184,6 @@ public class PlayerMovement : MonoBehaviour
 
 					hinge.connectedAnchor = linePoints [1];
 					hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
-
-					lineRenderer.SetPositions (linePoints);
-					lineRenderer.numPositions = linePoints.Length;
 				}
 			} else if (linePoints.Length > 2) {
 				Vector2 lastDir = linePoints [2] - linePoints [0];
@@ -210,14 +207,15 @@ public class PlayerMovement : MonoBehaviour
 
 					hinge.connectedAnchor = linePoints [1];
 					hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
-
-					lineRenderer.SetPositions (linePoints);
-					lineRenderer.numPositions = linePoints.Length;
 				}
 			}
 		}
 
-		lineRenderer.SetPositions (linePoints);
-		lineRenderer.numPositions = linePoints.Length;
+		Vector3[] invertedLinePoints = new Vector3[linePoints.Length];
+		for (int i = 0; i < linePoints.Length; i++) {
+			invertedLinePoints [i] = linePoints [linePoints.Length - 1 - i];
+		}
+		lineRenderer.numPositions = invertedLinePoints.Length;
+		lineRenderer.SetPositions (invertedLinePoints);
 	}
 }
