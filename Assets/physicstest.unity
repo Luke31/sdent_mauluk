@@ -1240,6 +1240,7 @@ MonoBehaviour:
   aimSpeed: 5
   ropeWidth: 0.1
   ropeSplitEpsilon: 0.1
+  ropeMinLength: 0.5
   ropeFeedSpeed: 0.1
 --- !u!50 &1952089910
 Rigidbody2D:
