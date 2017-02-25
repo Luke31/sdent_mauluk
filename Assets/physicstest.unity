@@ -137,7 +137,7 @@ MonoBehaviour:
     type: 2}
   tiledFile: {fileID: 4900000, guid: e2715b52f22e2cc489246ddcb9d38b6f, type: 3}
   offset: {x: -10, y: 5, z: 0}
-  tileSize: 2
+  tileSize: 3
 --- !u!1 &794349793
 GameObject:
   m_ObjectHideFlags: 0
