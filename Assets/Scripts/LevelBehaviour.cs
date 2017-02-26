@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.IO;
@@ -11,8 +12,10 @@ public class LevelBehaviour : MonoBehaviour
 
 	public Texture2D spriteSheetTexture;
 	public GameObject baseTilePrefab;
-	public TextAsset tiledFile;
-
+    public GameObject baseTileDestroyablePrefab;
+    public TextAsset tiledFile;
+    public string destroyableTiles;
+    private HashSet<int> destroyableTileIdx;
 
 	public Vector3 offset;
 	public float tileSize;
@@ -27,8 +30,11 @@ public class LevelBehaviour : MonoBehaviour
 			for (int x = 0; x < layer.Width; x++) {
 				for (int y = 0; y < layer.Height; y++) {
 					int dataValue = int.Parse (data [y * layer.Width + x]) - 1;
-					if (dataValue >= 0) {
-						GameObject instance = Instantiate (baseTilePrefab,
+					if (dataValue >= 0)
+					{
+					    var tilePrefab = destroyableTileIdx.Contains(dataValue + 1) ? baseTileDestroyablePrefab : baseTilePrefab;
+
+                        GameObject instance = Instantiate (tilePrefab,
 							new Vector3 (x * tileSize + offset.x, -y * tileSize + offset.y, 0),
 							Quaternion.identity);
 						
@@ -45,7 +51,10 @@ public class LevelBehaviour : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		tileSprites = Resources.LoadAll<Sprite>(spriteSheetTexture.name);
+        if (!string.IsNullOrEmpty(destroyableTiles))
+            destroyableTileIdx = new HashSet<int>(Array.ConvertAll(destroyableTiles.Split(','), int.Parse));
+	    
+        tileSprites = Resources.LoadAll<Sprite>(spriteSheetTexture.name);
 
 		XmlSerializer serializer = new XmlSerializer (typeof(TiledMap));
 		TiledMap map = (TiledMap) serializer.Deserialize (new MemoryStream (tiledFile.bytes));

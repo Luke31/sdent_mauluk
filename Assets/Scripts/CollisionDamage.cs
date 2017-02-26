@@ -6,7 +6,7 @@ public class CollisionDamage : MonoBehaviour
 {
     [Header("Health")]
     [Tooltip("Number of hits needed to destroy this object")]
-    public double Health = 100;
+    public double Health = 50;
 
     [Header("Trigger damage tag filter")]
     [Tooltip("Only objects with this tag trigger damage")]
