@@ -203,7 +203,10 @@ MonoBehaviour:
   spriteSheetTexture: {fileID: 2800000, guid: 744c425bc41f10f49b71a45c6ebb0194, type: 3}
   baseTilePrefab: {fileID: 1204928660498032, guid: a8c9ac3b69515b7428c0d527ae28205c,
     type: 2}
+  baseTileDestroyablePrefab: {fileID: 1999985046254630, guid: 1dfdd7b6da697164caf3ecdc631ebb18,
+    type: 2}
   tiledFile: {fileID: 4900000, guid: e2715b52f22e2cc489246ddcb9d38b6f, type: 3}
+  destroyableTiles: 777,778,779,809,810,811,841,842,843
   offset: {x: -10, y: 5, z: 0}
   tileSize: 3
 --- !u!1 &794349793
@@ -716,12 +719,11 @@ GameObject:
   - component: {fileID: 1792619910}
   - component: {fileID: 1792619909}
   - component: {fileID: 1792619908}
-  - component: {fileID: 1792619912}
   - component: {fileID: 1792619911}
   - component: {fileID: 1792619907}
   - component: {fileID: 1792619906}
   m_Layer: 0
-  m_Name: DestructableCube
+  m_Name: DestroyableCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -825,17 +827,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 100
   TagNameFilter: Player
---- !u!122 &1792619912
-Halo:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1792619905}
-  m_Enabled: 1
-  m_Color:
-    serializedVersion: 2
-    rgba: 4286611584
-  m_Size: 5
 --- !u!1 &1818577573
 GameObject:
   m_ObjectHideFlags: 0
