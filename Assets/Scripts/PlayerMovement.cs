@@ -131,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
 			hitSplit = Physics2D.Raycast (transform.position, ropeDir, ropeDir.magnitude - 0.1f, layerMask);
 
 			if (hitSplit.collider != null) {
-				Vector2 hullPoint = hitSplit.collider.bounds.ClosestPoint (hitSplit.point);
+				Vector2 hullPoint = GetClosestPointOnBoundHull(hitSplit.collider, hitSplit.point);
 				Vector3 hitPoint = new Vector3 (hullPoint.x, hullPoint.y);
 				float newRopeLength = Vector2.Distance (linePoints [0], hitPoint);
 				float newSplitLength = Vector2.Distance (linePoints [1], hitPoint);
@@ -226,4 +226,46 @@ public class PlayerMovement : MonoBehaviour
 		lineRenderer.numPositions = invertedLinePoints.Length;
 		lineRenderer.SetPositions (invertedLinePoints);
 	}
+
+	private Vector2 GetClosestPointOnBoundHull(Collider2D collider, Vector2 hitPoint) {
+		Vector2 result = new Vector2();
+		Vector2 tmp;
+
+		Vector2 center = collider.bounds.center;
+		float extent = collider.bounds.extents.x;
+
+		float minDist = float.MaxValue;
+		float dist;
+
+		tmp = center + ((Vector2.left + Vector2.up) * extent);
+		dist = Vector2.Distance (hitPoint, tmp);
+		if (dist < minDist) {
+			minDist = dist;
+			result = tmp;
+		}
+
+		tmp = center + ((Vector2.left + Vector2.down) * extent);
+		dist = Vector2.Distance (hitPoint, tmp);
+		if (dist < minDist) {
+			minDist = dist;
+			result = tmp;
+		}
+			
+		tmp = center + ((Vector2.right + Vector2.up) * extent);
+		dist = Vector2.Distance (hitPoint, tmp);
+		if (dist < minDist) {
+			minDist = dist;
+			result = tmp;
+		}
+
+		tmp = center + ((Vector2.right + Vector2.down) * extent);
+		dist = Vector2.Distance (hitPoint, tmp);
+		if (dist < minDist) {
+			minDist = dist;
+			result = tmp;
+		}
+
+		return result;
+	}
+
 }

@@ -50,12 +50,6 @@ public class LevelBehaviour : MonoBehaviour
 		XmlSerializer serializer = new XmlSerializer (typeof(TiledMap));
 		TiledMap map = (TiledMap) serializer.Deserialize (new MemoryStream (tiledFile.bytes));
 
-		int childCount = transform.childCount;
-		while (childCount-- > 0) {
-			transform.GetChild (0).SetParent (null);
-			Destroy(transform.GetChild(0));
-		}
-
 		Generate (map);
 	}
 	
