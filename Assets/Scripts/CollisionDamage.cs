@@ -12,8 +12,6 @@ public class CollisionDamage : MonoBehaviour
     [Tooltip("Only objects with this tag trigger damage")]
     public string TagNameFilter = "Player";
 
-    private ParticleSystem _psystem;
-
     void Start ()
 	{
 	}
