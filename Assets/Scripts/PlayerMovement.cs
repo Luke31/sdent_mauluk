@@ -31,7 +31,6 @@ public class PlayerMovement : MonoBehaviour
 
 	LineRenderer lineRenderer;
 	Vector3[] linePoints;
-	Vector2[] lineAngles;
 
 	// Use this for initialization
 	void Start ()
@@ -112,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
 		// Manage Rope
 		if (ropeActive && Input.GetButton ("RopeIn")) {
 			RaycastHit2D hitFeed = Physics2D.Raycast (transform.position, ropeDir, ropeFeedSpeed * 3, layerMask);
-			if (hitFeed.collider == null) {
+			if (hitFeed.collider == null && hinge.distance - ropeFeedSpeed > ropeMinLength) {
 				hinge.distance -= ropeFeedSpeed;
 			}
 		}
@@ -162,7 +161,8 @@ public class PlayerMovement : MonoBehaviour
 				Vector2 bc = linePoints [2] - linePoints [1];
 				Vector2 ac = linePoints [2] - linePoints [0];
 
-				if (hitLast.collider == null && Mathf.Abs(ab.magnitude + bc.magnitude - ac.magnitude) < ropeSplitEpsilon) {// We see both last points, maybe release one
+				// We see both last points, maybe release one
+				if (hitLast.collider == null && Mathf.Abs(ab.magnitude + bc.magnitude - ac.magnitude) < ropeSplitEpsilon) {
 					Vector3[] newPoints = new Vector3[linePoints.Length - 1];
 
 					newPoints [0] = linePoints [0]; // player
