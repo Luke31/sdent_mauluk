@@ -17,6 +17,8 @@ public class LevelBuilder : MonoBehaviour
 	public Vector3 offset;
 	public float tileSize;
 
+	public GameObject collisionModelRoot;
+
 	private Sprite[] tileSprites;
 
 	public void Generate (TiledMap map)
@@ -46,30 +48,56 @@ public class LevelBuilder : MonoBehaviour
 			collisionProp.Name = "ComputeCollision";
 			collisionProp.Value = "true";
 			if (layer.Properties.PropertyList.Contains (collisionProp)) {
-
+				bool[,] colliderMap = new bool[layer.Width, layer.Height];
+				
 				BoxCollider2D box = null;
-
-				// horizontal scan
+				// Create collision model
 				for (int y = 0; y < layer.Height; y++) {
 					for (int x = 0; x < layer.Width; x++) {
-						if (dataMap[x,y] >= 0) {
-							if (box == null) {
-								box = transform.gameObject.AddComponent<BoxCollider2D> ();
-								box.size = new Vector2 (tileSize, tileSize);
-								box.offset = new Vector2 (x * tileSize + offset.x, -y * tileSize + offset.y);
-							} else {
-								box.size += new Vector2 (tileSize, 0);
-								box.offset += new Vector2 (tileSize / 2f, 0);
-							} 
+						if (dataMap [x, y] >= 0 && !colliderMap [x, y]) {
+							box = collisionModelRoot.AddComponent<BoxCollider2D> ();
+							box.size = new Vector2 (tileSize, tileSize);
+							box.offset = new Vector2 (x * tileSize + offset.x, -y * tileSize + offset.y);
 
-							if (y < layer.Width - 1 && dataMap [x + 1, y] < 0) {
-								box = null;
+							colliderMap [x, y] = true;
+
+							// grow box horizontally
+							int rectWidth = 1;
+							for (int xx = x + 1; xx < layer.Width; xx++) {
+								if (dataMap [xx, y] >= 0) {
+									box.size += new Vector2 (tileSize, 0);
+									box.offset += new Vector2 (tileSize / 2f, 0);
+									rectWidth++;
+
+									colliderMap [xx, y] = true;
+								} else {
+									break;
+								}
+							}
+
+							// grow box vertically
+							for (int yy = y + 1; yy < layer.Height; yy++) {
+								bool sameWidth = true;
+								for (int xx = x; xx < x + rectWidth; xx++) {
+									if (dataMap [xx, yy] < 0) {
+										sameWidth = false;
+										break;
+									} 
+								}
+								if (!sameWidth) {
+									break;
+								} else {
+									box.size += new Vector2 (0, tileSize);
+									box.offset -= new Vector2 (0, tileSize / 2f);
+
+									for (int xx = x; xx < x + rectWidth; xx++) {
+										colliderMap [xx, yy] = true;
+									}
+								}
 							}
 						}
 					}
 				}
-
-
 			}
 		}
 	}
