@@ -232,33 +232,39 @@ public class PlayerMovement : MonoBehaviour
 		Vector2 tmp;
 
 		Vector2 center = collider.bounds.center;
-		float extent = collider.bounds.extents.x;
+		Vector2 extent = collider.bounds.extents;
 
 		float minDist = float.MaxValue;
 		float dist;
 
-		tmp = center + ((Vector2.left + Vector2.up) * extent);
+		tmp = center + extent;
 		dist = Vector2.Distance (hitPoint, tmp);
 		if (dist < minDist) {
 			minDist = dist;
 			result = tmp;
 		}
 
-		tmp = center + ((Vector2.left + Vector2.down) * extent);
-		dist = Vector2.Distance (hitPoint, tmp);
-		if (dist < minDist) {
-			minDist = dist;
-			result = tmp;
-		}
-			
-		tmp = center + ((Vector2.right + Vector2.up) * extent);
+		extent.Set (extent.x, -extent.y);
+
+		tmp = center + extent;
 		dist = Vector2.Distance (hitPoint, tmp);
 		if (dist < minDist) {
 			minDist = dist;
 			result = tmp;
 		}
 
-		tmp = center + ((Vector2.right + Vector2.down) * extent);
+		extent.Set (-extent.x, extent.y);
+
+		tmp = center + extent;
+		dist = Vector2.Distance (hitPoint, tmp);
+		if (dist < minDist) {
+			minDist = dist;
+			result = tmp;
+		}
+
+		extent.Set (extent.x, -extent.y);
+
+		tmp = center + extent;
 		dist = Vector2.Distance (hitPoint, tmp);
 		if (dist < minDist) {
 			minDist = dist;

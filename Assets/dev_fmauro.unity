@@ -99,7 +99,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 695964128}
-  - component: {fileID: 695964130}
+  - component: {fileID: 695964129}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -120,7 +120,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &695964130
+--- !u!114 &695964129
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -128,15 +128,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 695964127}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52393f0f67f975946aef52ebfec69654, type: 3}
+  m_Script: {fileID: 11500000, guid: 644c28ae2599d5b40ba961dc8a031e46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   levelRoot: {fileID: 695964127}
   spriteSheetTexture: {fileID: 2800000, guid: 744c425bc41f10f49b71a45c6ebb0194, type: 3}
-  baseTilePrefab: {fileID: 1204928660498032, guid: a8c9ac3b69515b7428c0d527ae28205c,
+  baseTilePrefab: {fileID: 1323275869419726, guid: 94919e8a00180354ebd7d7ab143bb9d4,
     type: 2}
   tiledFile: {fileID: 4900000, guid: e2715b52f22e2cc489246ddcb9d38b6f, type: 3}
-  offset: {x: -10, y: 5, z: 0}
+  offset: {x: -10, y: 10, z: 0}
   tileSize: 3
 --- !u!1 &794349793
 GameObject:

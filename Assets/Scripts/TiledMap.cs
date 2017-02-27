@@ -55,6 +55,9 @@ public class Data
 [XmlRoot (ElementName = "layer")]
 public class TiledLayer
 {
+	[XmlElement(ElementName="properties")]
+	public Properties Properties { get; set; }
+
 	[XmlElement (ElementName = "data")]
 	public Data Data { get; set; }
 
@@ -72,6 +75,27 @@ public class TiledLayer
 
 	[XmlAttribute (AttributeName = "offsety")]
 	public float Offsety { get; set; }
+}
+
+
+[XmlRoot(ElementName="property")]
+public class Property : IEquatable<Property>{
+	[XmlAttribute(AttributeName="name")]
+	public string Name { get; set; }
+	[XmlAttribute(AttributeName="type")]
+	public string Type { get; set; }
+	[XmlAttribute(AttributeName="value")]
+	public string Value { get; set; }
+
+	public bool Equals (Property other) {
+		return other != null && this.Name.Equals (other.Name) && this.Value.Equals(other.Value);	
+	}
+}
+
+[XmlRoot(ElementName="properties")]
+public class Properties {
+	[XmlElement(ElementName="property")]
+	public List<Property> PropertyList { get; set; }
 }
 
 [XmlRoot (ElementName = "map")]
