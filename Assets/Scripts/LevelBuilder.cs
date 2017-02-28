@@ -20,80 +20,103 @@ public class LevelBuilder : MonoBehaviour
 	public GameObject collisionModelRoot;
 
 	private Sprite[] tileSprites;
+	private readonly Property collisionProp = new Property { Name = "ComputeCollision", Type = "Boolean", Value = "true" };
 
-	public void Generate (TiledMap map)
+	public void Generate(TiledMap map)
 	{
-		foreach (TiledLayer layer in map.Layer) {
-			string[] data = Regex.Replace (layer.Data.Text, @"\r\n|\n", "").Split (',');
+		foreach (TiledLayer layer in map.Layer)
+		{
+			string[] data = Regex.Replace(layer.Data.Text, @"\r\n|\n", "").Split(',');
 			int[,] dataMap = new int[layer.Width, layer.Height];
 
-			for (int x = 0; x < layer.Width; x++) {
-				for (int y = 0; y < layer.Height; y++) {
-					int dataValue = int.Parse (data [y * layer.Width + x]) - 1;
-					dataMap [x, y] = dataValue;
-					if (dataValue >= 0) {
-						GameObject instance = Instantiate (baseTilePrefab,
-							                      new Vector3 (x * tileSize + offset.x, -y * tileSize + offset.y, 0),
-							                      Quaternion.identity);
+			for (int x = 0; x < layer.Width; x++)
+			{
+				for (int y = 0; y < layer.Height; y++)
+				{
+					int dataValue = int.Parse(data[y * layer.Width + x]) - 1;
+					dataMap[x, y] = dataValue;
+					if (dataValue >= 0)
+					{
+						GameObject instance = Instantiate(baseTilePrefab,
+												  new Vector3(x * tileSize + offset.x, -y * tileSize + offset.y, 0),
+												  Quaternion.identity);
 
-						instance.transform.SetParent (transform);
+						instance.transform.SetParent(transform);
 						instance.transform.localScale *= tileSize;
 
-						instance.GetComponentInChildren<SpriteRenderer> ().sprite = tileSprites [dataValue];
+						instance.GetComponentInChildren<SpriteRenderer>().sprite = tileSprites[dataValue];
 					}
 				}
 			}
 
-			Property collisionProp = new Property ();
-			collisionProp.Name = "ComputeCollision";
-			collisionProp.Value = "true";
-			if (layer.Properties.PropertyList.Contains (collisionProp)) {
-				bool[,] colliderMap = new bool[layer.Width, layer.Height];
-				
-				BoxCollider2D box = null;
-				// Create collision model
-				for (int y = 0; y < layer.Height; y++) {
-					for (int x = 0; x < layer.Width; x++) {
-						if (dataMap [x, y] >= 0 && !colliderMap [x, y]) {
-							box = collisionModelRoot.AddComponent<BoxCollider2D> ();
-							box.size = new Vector2 (tileSize, tileSize);
-							box.offset = new Vector2 (x * tileSize + offset.x, -y * tileSize + offset.y);
+			if (layer.Properties.PropertyList.Contains(collisionProp))
+			{
+				WorldCollision(layer, dataMap);
+			}
+		}
+	}
 
-							colliderMap [x, y] = true;
 
-							// grow box horizontally
-							int rectWidth = 1;
-							for (int xx = x + 1; xx < layer.Width; xx++) {
-								if (dataMap [xx, y] >= 0) {
-									box.size += new Vector2 (tileSize, 0);
-									box.offset += new Vector2 (tileSize / 2f, 0);
-									rectWidth++;
+	private void WorldCollision(TiledLayer layer, int[,] dataMap)
+	{
+		bool[,] colliderMap = new bool[layer.Width, layer.Height];
 
-									colliderMap [xx, y] = true;
-								} else {
-									break;
-								}
+		BoxCollider2D box = null;
+		// Create collision model
+		for (int y = 0; y < layer.Height; y++)
+		{
+			for (int x = 0; x < layer.Width; x++)
+			{
+				if (dataMap[x, y] >= 0 && !colliderMap[x, y])
+				{
+					box = collisionModelRoot.AddComponent<BoxCollider2D>();
+					box.size = new Vector2(tileSize, tileSize);
+					box.offset = new Vector2(x * tileSize + offset.x, -y * tileSize + offset.y);
+
+					colliderMap[x, y] = true;
+
+					// grow box horizontally
+					int rectWidth = 1;
+					for (int xx = x + 1; xx < layer.Width; xx++)
+					{
+						if (dataMap[xx, y] >= 0)
+						{
+							box.size += new Vector2(tileSize, 0);
+							box.offset += new Vector2(tileSize / 2f, 0);
+							rectWidth++;
+
+							colliderMap[xx, y] = true;
+						}
+						else
+						{
+							break;
+						}
+					}
+
+					// grow box vertically
+					for (int yy = y + 1; yy < layer.Height; yy++)
+					{
+						bool sameWidth = true;
+						for (int xx = x; xx < x + rectWidth; xx++)
+						{
+							if (dataMap[xx, yy] < 0)
+							{
+								sameWidth = false;
+								break;
 							}
+						}
+						if (!sameWidth)
+						{
+							break;
+						}
+						else
+						{
+							box.size += new Vector2(0, tileSize);
+							box.offset -= new Vector2(0, tileSize / 2f);
 
-							// grow box vertically
-							for (int yy = y + 1; yy < layer.Height; yy++) {
-								bool sameWidth = true;
-								for (int xx = x; xx < x + rectWidth; xx++) {
-									if (dataMap [xx, yy] < 0) {
-										sameWidth = false;
-										break;
-									} 
-								}
-								if (!sameWidth) {
-									break;
-								} else {
-									box.size += new Vector2 (0, tileSize);
-									box.offset -= new Vector2 (0, tileSize / 2f);
-
-									for (int xx = x; xx < x + rectWidth; xx++) {
-										colliderMap [xx, yy] = true;
-									}
-								}
+							for (int xx = x; xx < x + rectWidth; xx++)
+							{
+								colliderMap[xx, yy] = true;
 							}
 						}
 					}
@@ -103,18 +126,18 @@ public class LevelBuilder : MonoBehaviour
 	}
 
 	// Use this for initialization
-	void Start ()
+	void Start()
 	{
-		tileSprites = Resources.LoadAll<Sprite> (spriteSheetTexture.name);
+		tileSprites = Resources.LoadAll<Sprite>(spriteSheetTexture.name);
 
-		XmlSerializer serializer = new XmlSerializer (typeof(TiledMap));
-		TiledMap map = (TiledMap)serializer.Deserialize (new MemoryStream (tiledFile.bytes));
+		XmlSerializer serializer = new XmlSerializer(typeof(TiledMap));
+		TiledMap map = (TiledMap)serializer.Deserialize(new MemoryStream(tiledFile.bytes));
 
-		Generate (map);
+		Generate(map);
 	}
 
 	// Update is called once per frame
-	void Update ()
+	void Update()
 	{
 	}
 }
