@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
 
 	LineRenderer lineRenderer;
 	Vector3[] linePoints;
+	Vector2 ropeDir;
 
 	// Use this for initialization
 	void Start ()
@@ -64,10 +65,82 @@ public class PlayerMovement : MonoBehaviour
 		lineRenderer.numPositions = linePoints.Length;
 		lineRenderer.SetPositions (linePoints);
 	}
+
+	void FixedUpdate()
+	{
+		// check for splits in the rope
+		if (ropeActive)
+		{
+			linePoints[0] = transform.position;
+			ropeDir = linePoints[1] - linePoints[0];
+
+			RaycastHit2D hitSplit;
+			RaycastHit2D hitLast;
+
+			hitSplit = Physics2D.Raycast(transform.position, ropeDir, ropeDir.magnitude - 0.1f, layerMask);
+
+			if (hitSplit.collider != null)
+			{
+				Vector2 hullPoint = GetClosestPointOnBoundHull(hitSplit.collider, hitSplit.point);
+				Vector3 hitPoint = new Vector3(hullPoint.x, hullPoint.y);
+				float newRopeLength = Vector2.Distance(linePoints[0], hitPoint);
+				float newSplitLength = Vector2.Distance(linePoints[1], hitPoint);
+
+				// A new point in between (far away, enough to warrant a split in the rope)
+				if (newRopeLength > ropeMinLength && newSplitLength > ropeSplitEpsilon)
+				{
+					Vector3[] newPoints = new Vector3[linePoints.Length + 1];
+
+					newPoints[0] = linePoints[0]; // player
+					newPoints[1] = hitPoint;        // new anchor
+					newPoints[2] = linePoints[1];   // last anchor
+
+					for (int i = 2; i < linePoints.Length; i++)
+					{
+						newPoints[i + 1] = linePoints[i];
+					}
+
+					linePoints = newPoints;
+
+					hinge.connectedAnchor = linePoints[1];
+					hinge.distance = Vector3.Distance(transform.position, linePoints[1]);
+				}
+			}
+			else if (linePoints.Length > 2)
+			{
+				Vector2 lastDir = linePoints[2] - linePoints[0];
+				hitLast = Physics2D.Raycast(transform.position, lastDir, lastDir.magnitude - 0.1f, layerMask);
+
+				Vector2 ab = linePoints[1] - linePoints[0];
+				Vector2 bc = linePoints[2] - linePoints[1];
+				Vector2 ac = linePoints[2] - linePoints[0];
+
+				// We see both last points, maybe release one
+				if (hitLast.collider == null && Mathf.Abs(ab.magnitude + bc.magnitude - ac.magnitude) < ropeSplitEpsilon)
+				{
+					Vector3[] newPoints = new Vector3[linePoints.Length - 1];
+
+					newPoints[0] = linePoints[0]; // player
+					newPoints[1] = linePoints[2];   // new anchor = lastAnchor
+
+					for (int i = 2; i < linePoints.Length - 1; i++)
+					{
+						newPoints[i] = linePoints[i + 1];
+					}
+
+					linePoints = newPoints;
+
+					hinge.connectedAnchor = linePoints[1];
+					hinge.distance = Vector3.Distance(transform.position, linePoints[1]);
+				}
+			}
+		}
+	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+
 
 		// Update Aim
 		if (!ropeActive && Input.GetButton ("AimLeft")) {
@@ -93,9 +166,8 @@ public class PlayerMovement : MonoBehaviour
 			transform.position.y + (aimDirection.y * aimDistance), 0);
 		target.transform.position = aimPosition;
 
-		linePoints [0] = transform.position;
-		Vector2 ropeDir = linePoints [1] - linePoints [0];
-
+		linePoints[0] = transform.position;
+		ropeDir = linePoints[1] - linePoints[0];
 		Vector2 left = -Vector3.Cross (ropeDir, Vector3.forward).normalized * ropeSwingForce;
 		Vector2 right = -left;
 
@@ -123,62 +195,7 @@ public class PlayerMovement : MonoBehaviour
 			}
 		}
 
-		// check for splits in the rope
-		if (ropeActive) {
-			RaycastHit2D hitSplit;
-			RaycastHit2D hitLast;
-
-			hitSplit = Physics2D.Raycast (transform.position, ropeDir, ropeDir.magnitude - 0.1f, layerMask);
-
-			if (hitSplit.collider != null) {
-				Vector2 hullPoint = GetClosestPointOnBoundHull(hitSplit.collider, hitSplit.point);
-				Vector3 hitPoint = new Vector3 (hullPoint.x, hullPoint.y);
-				float newRopeLength = Vector2.Distance (linePoints [0], hitPoint);
-				float newSplitLength = Vector2.Distance (linePoints [1], hitPoint);
-
-				// A new point in between (far away, enough to warrant a split in the rope)
-				if (newRopeLength > ropeMinLength && newSplitLength > ropeSplitEpsilon) {
-					Vector3[] newPoints = new Vector3[linePoints.Length + 1];
-
-					newPoints [0] = linePoints [0]; // player
-					newPoints [1] = hitPoint; 		// new anchor
-					newPoints [2] = linePoints [1];	// last anchor
-
-					for (int i = 2; i < linePoints.Length; i++) {
-						newPoints [i + 1] = linePoints [i];
-					}
-
-					linePoints = newPoints;
-
-					hinge.connectedAnchor = linePoints [1];
-					hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
-				}
-			} else if (linePoints.Length > 2) {
-				Vector2 lastDir = linePoints [2] - linePoints [0];
-				hitLast = Physics2D.Raycast (transform.position, lastDir, lastDir.magnitude - 0.1f, layerMask);
-
-				Vector2 ab = linePoints [1] - linePoints [0];
-				Vector2 bc = linePoints [2] - linePoints [1];
-				Vector2 ac = linePoints [2] - linePoints [0];
-
-				// We see both last points, maybe release one
-				if (hitLast.collider == null && Mathf.Abs(ab.magnitude + bc.magnitude - ac.magnitude) < ropeSplitEpsilon) {
-					Vector3[] newPoints = new Vector3[linePoints.Length - 1];
-
-					newPoints [0] = linePoints [0]; // player
-					newPoints [1] = linePoints [2];	// new anchor = lastAnchor
-
-					for (int i = 2; i < linePoints.Length - 1; i++) {
-						newPoints [i] = linePoints [i + 1];
-					}
-
-					linePoints = newPoints;
-
-					hinge.connectedAnchor = linePoints [1];
-					hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
-				}
-			}
-		}
+		// rope physics
 
 		// Jump (testing)
 		if (Input.GetButtonDown ("Jump")) {
