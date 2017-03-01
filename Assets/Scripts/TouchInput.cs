@@ -15,9 +15,11 @@ public class TouchInput : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		Touch a = Input.GetTouch(0);
-
-	}
+		if (Input.touchCount == 2)
+		{
+			Touch a = Input.GetTouch(0);
+			touch[a.fingerId] = new TouchLeft();
+		}
 }
 
 abstract class TouchState
