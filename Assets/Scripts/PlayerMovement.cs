@@ -146,6 +146,8 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 			transform.position.y + (aimDirection.y * aimDistance), 0);
 		target.transform.position = aimPosition;
 
+		linePoints[0] = transform.position;
+
 		Vector3[] invertedLinePoints = new Vector3[linePoints.Length];
 		for (int i = 0; i < linePoints.Length; i++) {
 			invertedLinePoints [i] = linePoints [linePoints.Length - 1 - i];
@@ -156,13 +158,12 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 
 	private Vector2 GetRopeDir()
 	{
-		linePoints[0] = transform.position;
 		return linePoints[1] - linePoints[0];
 	}
 
 	private Vector2 GetLeftFoce()
 	{
-		return -Vector3.Cross(ropeDir, Vector3.forward).normalized * ropeSwingForce;
+		return -Vector3.Cross(GetRopeDir(), Vector3.forward).normalized * ropeSwingForce;
 	}
 
 	private Vector2 GetRightFoce()
