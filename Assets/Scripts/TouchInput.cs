@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TouchInput : MonoBehaviour
 {
-	private Dictionary<int, TouchState> touches = new Dictionary<int, TouchState>();
+	private readonly Dictionary<int, TouchState> touches = new Dictionary<int, TouchState>();
 
 	// Use this for initialization
 	void Start () {
@@ -15,11 +16,6 @@ public class TouchInput : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (Input.touchCount == 2)
-		{
-			Touch a = Input.GetTouch(0);
-			
-		}
 		for (int i = 0; i < Input.touchCount; i++)
 		{
 			HandleTouch(Input.GetTouch(i));
@@ -33,15 +29,15 @@ public class TouchInput : MonoBehaviour
 		{
 			if (t.position.x < Screen.width/2.0)
 			{
-				touches[t.fingerId] = new TouchLeft();
+				touches[t.fingerId] = new TouchLeftArea();
 			}
 			else
 			{
-				touches[t.fingerId] = new TouchRight();
+				touches[t.fingerId] = new TouchRightArea();
 			}
 		}
 
-		touches[t.fingerId].Update(t);
+		touches[t.fingerId].Update(this.gameObject, t);
 
 		if (t.phase == TouchPhase.Ended)
 		{
@@ -51,25 +47,46 @@ public class TouchInput : MonoBehaviour
 
 	abstract class TouchState
 	{
-		public abstract void Update(Touch t);
-	}
-
-	class TouchLeft : TouchState
-	{
-		public override void Update(Touch t)
+		public virtual void Update(GameObject player, Touch t)
 		{
-			if (t.deltaPosition.x > 0)
+			if (t.tapCount == 1)
 			{
-
+				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.Jump());
 			}
 		}
 	}
 
-	class TouchRight : TouchState
+	private class TouchLeftArea : TouchState
 	{
-		public override void Update(Touch t)
+		public override void Update(GameObject player, Touch t)
 		{
-			throw new NotImplementedException();
+			base.Update(player, t);
+
+			if (t.deltaPosition.x > 0)
+			{
+				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.AimRight());
+			}
+			else
+			{
+				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.AimLeft());
+			}
+		}
+	}
+
+	private class TouchRightArea : TouchState
+	{
+		public override void Update(GameObject player, Touch t)
+		{
+			base.Update(player, t);
+
+			if (t.deltaPosition.y > 0)
+			{
+				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.RopeIn());
+			}
+			else
+			{
+				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.RopeOut());
+			}
 		}
 	}
 
