@@ -7,10 +7,11 @@ using UnityEngine.EventSystems;
 public class TouchInput : MonoBehaviour
 {
 	private readonly Dictionary<int, TouchState> touches = new Dictionary<int, TouchState>();
+	public float inputForceMinThreshold = 0.01f;
+	public float sensitivity = 6f;
 
 	// Use this for initialization
 	void Start () {
-		
 	}
 	
 	// Update is called once per frame
@@ -27,17 +28,18 @@ public class TouchInput : MonoBehaviour
 	{
 		if (!touches.ContainsKey(t.fingerId))
 		{
-			if (t.position.x < Screen.width/2.0)
+			if (t.position.x < 2.0 / 3.0 * Screen.width)
 			{
-				touches[t.fingerId] = new TouchLeftArea();
+				touches[t.fingerId] = new TouchLeftArea (t.position, inputForceMinThreshold);
 			}
 			else
 			{
-				touches[t.fingerId] = new TouchRightArea();
+				touches[t.fingerId] = new TouchRightArea(t.position, inputForceMinThreshold);
 			}
 		}
 
-		touches[t.fingerId].Update(this.gameObject, t);
+		//Behaviour depending on state/place on screen
+		touches[t.fingerId].Update(this.gameObject, t, sensitivity);
 
 		if (t.phase == TouchPhase.Ended)
 		{
@@ -47,46 +49,66 @@ public class TouchInput : MonoBehaviour
 
 	abstract class TouchState
 	{
-		public virtual void Update(GameObject player, Touch t)
+		protected readonly Vector2 initPos;
+		protected readonly float inputForceMinThreshold;
+
+		protected TouchState(Vector2 initPos, float inputForceMinThreshold)
 		{
-			if (t.tapCount == 1)
-			{
-				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.Jump());
-			}
+			this.initPos = initPos;
+			this.inputForceMinThreshold = inputForceMinThreshold;
 		}
+
+		public abstract void Update(GameObject player, Touch t, float sensitivity);
 	}
 
 	private class TouchLeftArea : TouchState
 	{
-		public override void Update(GameObject player, Touch t)
+		public override void Update(GameObject player, Touch t, float sensitivity)
 		{
-			base.Update(player, t);
+			if (t.phase == TouchPhase.Moved || t.phase == TouchPhase.Stationary)
+			{
+				Vector2 deltaInitPosition = t.position - initPos; //px
+				deltaInitPosition.Scale(new Vector2(1.0f / Screen.width, 1.0f / Screen.height)); //[0,1]
+				deltaInitPosition.Scale(new Vector2(sensitivity, sensitivity));
 
-			if (t.deltaPosition.x > 0)
-			{
-				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.AimRight());
+				float powForceX = deltaInitPosition.x * deltaInitPosition.x;
+				float powForceY = deltaInitPosition.y * deltaInitPosition.y;
+				if (deltaInitPosition.x > inputForceMinThreshold)
+				{
+					ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.AimRight(powForceX));
+				}
+				else if (deltaInitPosition.x < -inputForceMinThreshold)
+				{
+					ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.AimLeft(powForceX));
+				}
+				if (deltaInitPosition.y > inputForceMinThreshold)
+				{
+					ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.RopeIn(powForceY));
+				}
+				else if (deltaInitPosition.y < -inputForceMinThreshold)
+				{
+					ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.RopeOut(powForceY));
+				}
 			}
-			else
-			{
-				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.AimLeft());
-			}
+		}
+
+		public TouchLeftArea(Vector2 initPos, float inputForceMinThreshold) : base(initPos, inputForceMinThreshold)
+		{
 		}
 	}
 
 	private class TouchRightArea : TouchState
 	{
-		public override void Update(GameObject player, Touch t)
+		public override void Update(GameObject player, Touch t, float sensitivity)
 		{
-			base.Update(player, t);
+			if(t.phase == TouchPhase.Ended) { 
+				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.Jump());
+			}
 
-			if (t.deltaPosition.y > 0)
-			{
-				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.RopeIn());
-			}
-			else
-			{
-				ExecuteEvents.Execute<IGameControlTarget>(target: player, eventData: null, functor: (x, y) => x.RopeOut());
-			}
+		}
+
+		public TouchRightArea(Vector2 initPos, float inputForceMinThreshold) : base(initPos, inputForceMinThreshold)
+		{
 		}
 	}
 

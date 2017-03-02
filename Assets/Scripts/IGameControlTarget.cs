@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 
 public interface IGameControlTarget : IEventSystemHandler
 {
-	void AimLeft();
-	void AimRight();
-	void RopeIn();
-	void RopeOut();
+	void AimLeft(float inputForce);
+	void AimRight(float inputForce);
+	void RopeIn(float inputForce);
+	void RopeOut(float inputForce);
 	void Jump();
 }

@@ -171,15 +171,15 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		return -GetLeftFoce();
 	}
 	
-	public void AimLeft()
+	public void AimLeft(float inputForce)
 	{
 		if (ropeActive)
 		{
-			rb.AddForce(GetLeftFoce());
+			rb.AddForce(GetLeftFoce() * inputForce);
 		}
 		else
 		{
-			aimTemp = Quaternion.AngleAxis(aimSpeed, Vector3.forward) * aimDirection;
+			aimTemp = Quaternion.AngleAxis(aimSpeed * inputForce, Vector3.forward) * aimDirection;
 
 			if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
 			{
@@ -190,15 +190,15 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 
 	}
 
-	public void AimRight()
+	public void AimRight(float inputForce)
 	{
 		if (ropeActive)
 		{
-			rb.AddForce(GetRightFoce());
+			rb.AddForce(GetRightFoce() * inputForce);
 		}
 		else
 		{
-			aimTemp = Quaternion.AngleAxis(-aimSpeed, Vector3.forward) * aimDirection;
+			aimTemp = Quaternion.AngleAxis(-aimSpeed * inputForce, Vector3.forward) * aimDirection;
 
 			if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
 			{
@@ -208,26 +208,26 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		}
 	}
 
-	public void RopeIn()
+	public void RopeIn(float inputForce)
 	{
 		if (ropeActive)
 		{
 			RaycastHit2D hitFeed = Physics2D.Raycast(transform.position, ropeDir, ropeFeedSpeed * 3, layerMask);
 			if (hitFeed.collider == null && hinge.distance - ropeFeedSpeed > ropeMinLength)
 			{
-				hinge.distance -= ropeFeedSpeed;
+				hinge.distance -= ropeFeedSpeed * inputForce;
 			}
 		}
 	}
 
-	public void RopeOut()
+	public void RopeOut(float inputForce)
 	{
 		if (ropeActive)
 		{
 			RaycastHit2D hitFeed = Physics2D.Raycast(transform.position, -ropeDir, ropeFeedSpeed * 3, layerMask);
 			if (hitFeed.collider == null)
 			{
-				hinge.distance += ropeFeedSpeed;
+				hinge.distance += ropeFeedSpeed * inputForce;
 			}
 		}
 	}

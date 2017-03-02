@@ -17,19 +17,19 @@ public class KeyInput : MonoBehaviour
 	{
 		if (Input.GetButton("AimLeft"))
 		{
-			ExecuteEvents.Execute<IGameControlTarget>(target:this.gameObject, eventData:null, functor:(x, y) => x.AimLeft()); 
+			ExecuteEvents.Execute<IGameControlTarget>(target:this.gameObject, eventData:null, functor:(x, y) => x.AimLeft(1f)); 
 		}
 		if (Input.GetButton("AimRight"))
 		{
-			ExecuteEvents.Execute<IGameControlTarget>(target: this.gameObject, eventData: null, functor: (x, y) => x.AimRight());
+			ExecuteEvents.Execute<IGameControlTarget>(target: this.gameObject, eventData: null, functor: (x, y) => x.AimRight(1f));
 		}
 		if (Input.GetButton("RopeIn"))
 		{
-			ExecuteEvents.Execute<IGameControlTarget>(target: this.gameObject, eventData: null, functor: (x, y) => x.RopeIn());
+			ExecuteEvents.Execute<IGameControlTarget>(target: this.gameObject, eventData: null, functor: (x, y) => x.RopeIn(1f));
 		}
 		if (Input.GetButton("RopeOut"))
 		{
-			ExecuteEvents.Execute<IGameControlTarget>(target: this.gameObject, eventData: null, functor: (x, y) => x.RopeOut());
+			ExecuteEvents.Execute<IGameControlTarget>(target: this.gameObject, eventData: null, functor: (x, y) => x.RopeOut(1f));
 		}
 		if (Input.GetButtonDown("Jump"))
 		{
