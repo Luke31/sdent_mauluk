@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TouchInput : MonoBehaviour
 {
-	private Dictionary<int, TouchState> touch = new Dictionary<int, TouchState>();
+	private Dictionary<int, TouchState> touches = new Dictionary<int, TouchState>();
 
 	// Use this for initialization
 	void Start () {
@@ -18,30 +18,62 @@ public class TouchInput : MonoBehaviour
 		if (Input.touchCount == 2)
 		{
 			Touch a = Input.GetTouch(0);
-			touch[a.fingerId] = new TouchLeft();
+			
 		}
-}
-
-abstract class TouchState
-{
-	public abstract void Update();
-}
-
-class TouchLeft : TouchState
-{
-	public override void Update()
-	{
+		for (int i = 0; i < Input.touchCount; i++)
+		{
+			HandleTouch(Input.GetTouch(i));
+		}
 		
-		throw new NotImplementedException();
 	}
+
+	private void HandleTouch(Touch t)
+	{
+		if (!touches.ContainsKey(t.fingerId))
+		{
+			if (t.position.x < Screen.width/2.0)
+			{
+				touches[t.fingerId] = new TouchLeft();
+			}
+			else
+			{
+				touches[t.fingerId] = new TouchRight();
+			}
+		}
+
+		touches[t.fingerId].Update(t);
+
+		if (t.phase == TouchPhase.Ended)
+		{
+			touches.Remove(t.fingerId);
+		}
+	}
+
+	abstract class TouchState
+	{
+		public abstract void Update(Touch t);
+	}
+
+	class TouchLeft : TouchState
+	{
+		public override void Update(Touch t)
+		{
+			if (t.deltaPosition.x > 0)
+			{
+
+			}
+		}
+	}
+
+	class TouchRight : TouchState
+	{
+		public override void Update(Touch t)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
 }
 
-class TouchRight : TouchState
-{
-	public override void Update()
-	{
-		throw new NotImplementedException();
-	}
-}
 
 

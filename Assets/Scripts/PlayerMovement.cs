@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IGameControlTarget
 {
 	public float aimDistance = 1;
 	public float aimSpeed = 10;
@@ -140,101 +141,10 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-
-
-		// Update Aim
-		if (!ropeActive && Input.GetButton ("AimLeft")) {
-			aimTemp = Quaternion.AngleAxis (aimSpeed, Vector3.forward) * aimDirection;
-
-			if (Vector2.Angle (aimTemp, Vector2.up) < aimMaxAngle) {
-				aimDirection.Set (aimTemp.x, aimTemp.y);
-				aimDirection.Normalize ();
-			}
-		}
-
-		if (!ropeActive && Input.GetButton ("AimRight")) {
-			aimTemp = Quaternion.AngleAxis (-aimSpeed, Vector3.forward) * aimDirection;
-
-			if (Vector2.Angle (aimTemp, Vector2.up) < aimMaxAngle) {
-				aimDirection.Set (aimTemp.x, aimTemp.y);
-				aimDirection.Normalize ();
-			}
-		}
-
 		// update aim target
 		aimPosition.Set (transform.position.x + (aimDirection.x * aimDistance),
 			transform.position.y + (aimDirection.y * aimDistance), 0);
 		target.transform.position = aimPosition;
-
-		linePoints[0] = transform.position;
-		ropeDir = linePoints[1] - linePoints[0];
-		Vector2 left = -Vector3.Cross (ropeDir, Vector3.forward).normalized * ropeSwingForce;
-		Vector2 right = -left;
-
-		// Rope Swing
-		if (ropeActive && Input.GetButton ("AimLeft")) {
-			rb.AddForce (left);
-		}
-
-		if (ropeActive && Input.GetButton ("AimRight")) {
-			rb.AddForce (right);
-		}
-			
-		// Manage Rope
-		if (ropeActive && Input.GetButton ("RopeIn")) {
-			RaycastHit2D hitFeed = Physics2D.Raycast (transform.position, ropeDir, ropeFeedSpeed * 3, layerMask);
-			if (hitFeed.collider == null && hinge.distance - ropeFeedSpeed > ropeMinLength) {
-				hinge.distance -= ropeFeedSpeed;
-			}
-		}
-
-		if (ropeActive && Input.GetButton ("RopeOut")) {
-			RaycastHit2D hitFeed = Physics2D.Raycast (transform.position, -ropeDir, ropeFeedSpeed * 3, layerMask);
-			if (hitFeed.collider == null) {
-				hinge.distance += ropeFeedSpeed;
-			}
-		}
-
-		// rope physics
-
-		// Jump (testing)
-		if (Input.GetButtonDown ("Jump")) {
-			if (ropeActive) {
-				Destroy (hinge);
-				ropeActive = false;
-				target.GetComponent<MeshRenderer> ().enabled = true;
-				lineRenderer.startWidth = 0;
-				lineRenderer.endWidth = 0;
-				playerCollider.sharedMaterial = matStatic;
-				resetRope ();
-			} else {
-				RaycastHit2D hit;
-				hit = Physics2D.Raycast (aimPosition, aimDirection);
-				if (hit.collider != null) {
-
-					Vector2 hullPoint = hit.collider.bounds.ClosestPoint (hit.point);
-					Vector3 hitPoint = new Vector3 (hullPoint.x, hullPoint.y);
-
-					if (Vector2.Distance (hitPoint, transform.position) > ropeMinLength) {
-						linePoints [1].x = hitPoint.x;
-						linePoints [1].y = hitPoint.y;
-
-						ropeActive = true;
-						target.GetComponent<MeshRenderer> ().enabled = false;
-						lineRenderer.startWidth = ropeWidth;
-						lineRenderer.endWidth = ropeWidth;
-						playerCollider.sharedMaterial = matBouncy;
-
-						hinge = gameObject.AddComponent (typeof(DistanceJoint2D)) as DistanceJoint2D;
-						hinge.enableCollision = true;
-						hinge.autoConfigureConnectedAnchor = false;
-						hinge.autoConfigureDistance = false;
-						hinge.connectedAnchor = linePoints [1];
-						hinge.distance = Vector3.Distance (transform.position, linePoints [1]);
-					}
-				}
-			}
-		}
 
 		Vector3[] invertedLinePoints = new Vector3[linePoints.Length];
 		for (int i = 0; i < linePoints.Length; i++) {
@@ -244,7 +154,129 @@ public class PlayerMovement : MonoBehaviour
 		lineRenderer.SetPositions (invertedLinePoints);
 	}
 
-	private Vector2 GetClosestPointOnBoundHull(Collider2D collider, Vector2 hitPoint) {
+	private Vector2 GetRopeDir()
+	{
+		linePoints[0] = transform.position;
+		return linePoints[1] - linePoints[0];
+	}
+
+	private Vector2 GetLeftFoce()
+	{
+		return -Vector3.Cross(ropeDir, Vector3.forward).normalized * ropeSwingForce;
+	}
+
+	private Vector2 GetRightFoce()
+	{
+		return -GetLeftFoce();
+	}
+	
+	public void AimLeft()
+	{
+		if (ropeActive)
+		{
+			rb.AddForce(GetLeftFoce());
+		}
+		else
+		{
+			aimTemp = Quaternion.AngleAxis(aimSpeed, Vector3.forward) * aimDirection;
+
+			if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
+			{
+				aimDirection.Set(aimTemp.x, aimTemp.y);
+				aimDirection.Normalize();
+			}
+		}
+
+	}
+
+	public void AimRight()
+	{
+		if (ropeActive)
+		{
+			rb.AddForce(GetRightFoce());
+		}
+		else
+		{
+			aimTemp = Quaternion.AngleAxis(-aimSpeed, Vector3.forward) * aimDirection;
+
+			if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
+			{
+				aimDirection.Set(aimTemp.x, aimTemp.y);
+				aimDirection.Normalize();
+			}
+		}
+	}
+
+	public void RopeIn()
+	{
+		if (ropeActive)
+		{
+			RaycastHit2D hitFeed = Physics2D.Raycast(transform.position, ropeDir, ropeFeedSpeed * 3, layerMask);
+			if (hitFeed.collider == null && hinge.distance - ropeFeedSpeed > ropeMinLength)
+			{
+				hinge.distance -= ropeFeedSpeed;
+			}
+		}
+	}
+
+	public void RopeOut()
+	{
+		if (ropeActive)
+		{
+			RaycastHit2D hitFeed = Physics2D.Raycast(transform.position, -ropeDir, ropeFeedSpeed * 3, layerMask);
+			if (hitFeed.collider == null)
+			{
+				hinge.distance += ropeFeedSpeed;
+			}
+		}
+	}
+
+	public void Jump()
+	{
+		if (ropeActive)
+		{
+			Destroy(hinge);
+			ropeActive = false;
+			target.GetComponent<MeshRenderer>().enabled = true;
+			lineRenderer.startWidth = 0;
+			lineRenderer.endWidth = 0;
+			playerCollider.sharedMaterial = matStatic;
+			resetRope();
+		}
+		else
+		{
+			RaycastHit2D hit;
+			hit = Physics2D.Raycast(aimPosition, aimDirection);
+			if (hit.collider != null)
+			{
+
+				Vector2 hullPoint = hit.collider.bounds.ClosestPoint(hit.point);
+				Vector3 hitPoint = new Vector3(hullPoint.x, hullPoint.y);
+
+				if (Vector2.Distance(hitPoint, transform.position) > ropeMinLength)
+				{
+					linePoints[1].x = hitPoint.x;
+					linePoints[1].y = hitPoint.y;
+
+					ropeActive = true;
+					target.GetComponent<MeshRenderer>().enabled = false;
+					lineRenderer.startWidth = ropeWidth;
+					lineRenderer.endWidth = ropeWidth;
+					playerCollider.sharedMaterial = matBouncy;
+
+					hinge = gameObject.AddComponent(typeof(DistanceJoint2D)) as DistanceJoint2D;
+					hinge.enableCollision = true;
+					hinge.autoConfigureConnectedAnchor = false;
+					hinge.autoConfigureDistance = false;
+					hinge.connectedAnchor = linePoints[1];
+					hinge.distance = Vector3.Distance(transform.position, linePoints[1]);
+				}
+			}
+		}
+	}
+
+	private Vector2 GetClosestPointOnBoundHull(Collider2D collider, Vector2 hitPoint)
+	{
 		Vector2 result = new Vector2();
 		Vector2 tmp;
 
@@ -255,40 +287,43 @@ public class PlayerMovement : MonoBehaviour
 		float dist;
 
 		tmp = center + extent;
-		dist = Vector2.Distance (hitPoint, tmp);
-		if (dist < minDist) {
+		dist = Vector2.Distance(hitPoint, tmp);
+		if (dist < minDist)
+		{
 			minDist = dist;
 			result = tmp;
 		}
 
-		extent.Set (extent.x, -extent.y);
+		extent.Set(extent.x, -extent.y);
 
 		tmp = center + extent;
-		dist = Vector2.Distance (hitPoint, tmp);
-		if (dist < minDist) {
+		dist = Vector2.Distance(hitPoint, tmp);
+		if (dist < minDist)
+		{
 			minDist = dist;
 			result = tmp;
 		}
 
-		extent.Set (-extent.x, extent.y);
+		extent.Set(-extent.x, extent.y);
 
 		tmp = center + extent;
-		dist = Vector2.Distance (hitPoint, tmp);
-		if (dist < minDist) {
+		dist = Vector2.Distance(hitPoint, tmp);
+		if (dist < minDist)
+		{
 			minDist = dist;
 			result = tmp;
 		}
 
-		extent.Set (extent.x, -extent.y);
+		extent.Set(extent.x, -extent.y);
 
 		tmp = center + extent;
-		dist = Vector2.Distance (hitPoint, tmp);
-		if (dist < minDist) {
+		dist = Vector2.Distance(hitPoint, tmp);
+		if (dist < minDist)
+		{
 			minDist = dist;
 			result = tmp;
 		}
 
 		return result;
 	}
-
 }
