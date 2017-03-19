@@ -917,15 +917,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037e08de007314c4a8dc2b8ed5d838d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aimDistance: 4
-  aimSpeed: 3
-  aimMaxAngle: 90
-  ropeWidth: 0.2
-  ropeSplitEpsilon: 0.2
-  ropeMinLength: 1
-  ropeFeedSpeed: 0.5
-  ropeSwingForce: 0.6
-  animator: {fileID: 0}
 --- !u!50 &1952089910
 Rigidbody2D:
   serializedVersion: 4
