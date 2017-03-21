@@ -38,6 +38,18 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 1
     m_Controller: {fileID: 0}
+  - m_Name: RopeWidth
+    m_Type: 1
+    m_DefaultFloat: 0.2
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
+  - m_Name: RopeFeedSpeed
+    m_Type: 1
+    m_DefaultFloat: 0.5
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Player
@@ -73,10 +85,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbf2ea8824eeeae488a4eaead6d5ab38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ropeWidth: 0.2
   ropeSplitEpsilon: 0.2
   ropeMinLength: 1
-  ropeFeedSpeed: 0.5
   ropeSwingForce: 0.6
 --- !u!114 &114796582632680678
 MonoBehaviour:

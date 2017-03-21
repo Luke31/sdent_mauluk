@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 public class RopeActiveBehaviour : PlayerBehaviour {
@@ -19,11 +20,10 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	PhysicsMaterial2D matStatic;
 
 	DistanceJoint2D hinge;
-
+	private RopeRenderer _ropeRenderer;
 
 	int layerMask;
-
-	LineRenderer lineRenderer;
+	
 	Vector3[] linePoints;
 	Vector2 ropeDir;
 
@@ -35,9 +35,8 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		{
 			linePoints[i] = Vector3.zero;
 		}
-
-		lineRenderer.numPositions = linePoints.Length;
-		lineRenderer.SetPositions(linePoints);
+		
+		_ropeRenderer.ResetRope(linePoints);
 	}
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -45,8 +44,8 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	{
 		Player = GameObject.Find("Player");
 		Target = GameObject.Find("Target");
-
-		lineRenderer = Player.GetComponentInChildren<LineRenderer>();
+		_ropeRenderer = new RopeRenderer(Player.GetComponentInChildren<LineRenderer>(), animator.GetFloat("RopeWidth"), animator.GetFloat("RopeFeedSpeed"));
+		
 		playerCollider = Player.GetComponentInChildren<CircleCollider2D>();
 
 		matBouncy = (PhysicsMaterial2D)Resources.Load("PlayerBouncy");
@@ -80,8 +79,8 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 				linePoints[1].x = hitPoint.x;
 				linePoints[1].y = hitPoint.y;
 				
-				lineRenderer.startWidth = ropeWidth;
-				lineRenderer.endWidth = ropeWidth;
+				_ropeRenderer.ActivateRope();
+
 				playerCollider.sharedMaterial = matBouncy;
 
 				hinge = Player.AddComponent(typeof(DistanceJoint2D)) as DistanceJoint2D;
@@ -155,8 +154,8 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		{
 			invertedLinePoints[i] = linePoints[linePoints.Length - 1 - i];
 		}
-		lineRenderer.numPositions = invertedLinePoints.Length;
-		lineRenderer.SetPositions(invertedLinePoints);
+
+		_ropeRenderer.Update(invertedLinePoints);
 	}
 
 	private void FixedUpdate()
@@ -235,8 +234,8 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		Destroy(hinge);
-		lineRenderer.startWidth = 0;
-		lineRenderer.endWidth = 0;
+		//lineRenderer.startWidth = 0;
+		//lineRenderer.endWidth = 0;
 		playerCollider.sharedMaterial = matStatic;
 		resetRope();
 	}
