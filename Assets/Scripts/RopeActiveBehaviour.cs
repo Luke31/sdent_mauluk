@@ -68,7 +68,7 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		var playerPos = Player.transform.position;
 		var aimPosition = Target.transform.position;
 		var aimDirection = (aimPosition - playerPos).normalized;
-		hit = Physics2D.Raycast(aimPosition, aimDirection);
+		hit = Physics2D.Raycast(playerPos, aimDirection, int.MaxValue, layerMask);
 		if (hit.collider != null)
 		{
 
