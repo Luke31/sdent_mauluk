@@ -55,7 +55,7 @@ public class Data
 [XmlRoot (ElementName = "layer")]
 public class TiledLayer
 {
-	[XmlElement(ElementName="properties")]
+	[XmlElement (ElementName = "properties")]
 	public Properties Properties { get; set; }
 
 	[XmlElement (ElementName = "data")]
@@ -78,24 +78,71 @@ public class TiledLayer
 }
 
 
-[XmlRoot(ElementName="property")]
-public class Property : IEquatable<Property>{
-	[XmlAttribute(AttributeName="name")]
+[XmlRoot (ElementName = "property")]
+public class Property : IEquatable<Property>
+{
+	[XmlAttribute (AttributeName = "name")]
 	public string Name { get; set; }
-	[XmlAttribute(AttributeName="type")]
+
+	[XmlAttribute (AttributeName = "type")]
 	public string Type { get; set; }
-	[XmlAttribute(AttributeName="value")]
+
+	[XmlAttribute (AttributeName = "value")]
 	public string Value { get; set; }
 
-	public bool Equals (Property other) {
-		return other != null && this.Name.Equals (other.Name) && this.Value.Equals(other.Value);	
+	public bool Equals (Property other)
+	{
+		return other != null && this.Name.Equals (other.Name);	
 	}
 }
 
-[XmlRoot(ElementName="properties")]
-public class Properties {
-	[XmlElement(ElementName="property")]
+[XmlRoot (ElementName = "properties")]
+public class Properties
+{
+	[XmlElement (ElementName = "property")]
 	public List<Property> PropertyList { get; set; }
+}
+
+
+[XmlRoot (ElementName = "object")]
+public class Object
+{
+	[XmlAttribute (AttributeName = "id")]
+	public string Id { get; set; }
+
+	[XmlAttribute (AttributeName = "name")]
+	public string Name { get; set; }
+
+	[XmlAttribute (AttributeName = "x")]
+	public string X { get; set; }
+
+	[XmlAttribute (AttributeName = "y")]
+	public string Y { get; set; }
+
+	[XmlAttribute (AttributeName = "width")]
+	public string Width { get; set; }
+
+	[XmlAttribute (AttributeName = "height")]
+	public string Height { get; set; }
+
+	[XmlAttribute (AttributeName = "rotation")]
+	public string Rotation { get; set; }
+
+	[XmlElement (ElementName = "properties")]
+	public Properties Properties { get; set; }
+
+	[XmlElement (ElementName = "ellipse")]
+	public string Ellipse { get; set; }
+}
+
+[XmlRoot (ElementName = "objectgroup")]
+public class Objectgroup
+{
+	[XmlElement (ElementName = "object")]
+	public List<Object> Object { get; set; }
+
+	[XmlAttribute (AttributeName = "name")]
+	public string Name { get; set; }
 }
 
 [XmlRoot (ElementName = "map")]
@@ -106,6 +153,9 @@ public class TiledMap
 
 	[XmlElement (ElementName = "layer")]
 	public List<TiledLayer> Layer { get; set; }
+
+	[XmlElement (ElementName = "objectgroup")]
+	public List<Objectgroup> Objectgroup { get; set; }
 
 	[XmlAttribute (AttributeName = "version")]
 	public string Version { get; set; }

@@ -198,7 +198,7 @@ MonoBehaviour:
   spriteSheetTexture: {fileID: 2800000, guid: 744c425bc41f10f49b71a45c6ebb0194, type: 3}
   baseTilePrefab: {fileID: 1323275869419726, guid: 94919e8a00180354ebd7d7ab143bb9d4,
     type: 2}
-  tiledFile: {fileID: 4900000, guid: e2715b52f22e2cc489246ddcb9d38b6f, type: 3}
+  tiledFile: {fileID: 4900000, guid: 351b0f195c9df4a8d9e8136ee06a2de4, type: 3}
   offset: {x: -10, y: 10, z: 0}
   tileSize: 3
   collisionModelRoot: {fileID: 1515564294}
