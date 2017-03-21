@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
@@ -38,10 +39,13 @@ public class RopeExpandingBehaviour : PlayerBehaviour {
 	{
 		originPos = Player.transform.position;
 		var hitPoint = _ropeRenderer.GetHitPoint(originPos, Target.transform.position);
-
-		if (Vector3.Distance(ropeEnd, hitPoint) > 5.0)
+		Vector3 ropeDir = (hitPoint - originPos).normalized;
+		Plane hitPlane = new Plane(ropeDir, hitPoint);
+		
+		if (!hitPlane.GetSide(ropeEnd))
 		{
-			ropeEnd += (hitPoint - originPos).normalized * RopeShootSpeed;
+			Debug.Log(string.Format("RopeEnd {0}, hitPoint: {1}, dis: {2}", ropeEnd, hitPoint, Math.Abs(Vector3.Distance(ropeEnd, hitPoint))));
+			ropeEnd += ropeDir * RopeShootSpeed;
 			_ropeRenderer.Update(linePoints);
 		}
 		else
