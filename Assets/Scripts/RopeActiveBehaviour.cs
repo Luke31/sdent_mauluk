@@ -26,7 +26,8 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	int layerMask;
 	
 	Vector3[] linePoints;
-	Vector2 ropeDir;
+	Vector2 initHinge;
+	private Vector2 ropeDir;
 
 
 	void resetRope()
@@ -45,6 +46,10 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	{
 		Player = GameObject.Find("Player");
 		Target = GameObject.Find("Target");
+		initHinge.x = animator.GetFloat("InitHingeX");
+		initHinge.y = animator.GetFloat("InitHingeY");
+		//ropeDir = initRopeDir;
+
 		layerMask = LayerMask.GetMask("Player");
 		layerMask = ~layerMask;
 		
@@ -61,9 +66,9 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 
 		rb = Player.GetComponent<Rigidbody2D>();
 
-		Vector3 hitPoint = _ropeRenderer.GetHitPoint(Player.transform.position, Target.transform.position);
-
-		ActivateHinge(hitPoint);
+		//Vector3 hitPoint = _ropeRenderer.GetHitPoint(Player.transform.position, initRopeDir);
+		//VhitPont = initHinge;
+		ActivateHinge(initHinge);
 	}
 
 	private void ActivateHinge(Vector3 hitPoint)

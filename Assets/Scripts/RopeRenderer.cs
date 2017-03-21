@@ -41,12 +41,12 @@ namespace Assets.Scripts
 			_lineRenderer.endWidth = _ropeWidth;
 		}
 
-		internal Vector3 GetHitPoint(Vector3 originPos, Vector3 aimPosition)
-		{
-			return GetHitPointByDir(originPos, (aimPosition - originPos).normalized);
-		}
+		//internal Vector3 GetHitPoint(Vector3 originPos, Vector3 aimPosition)
+		//{
+		//	return GetHitPointByDir(originPos, (aimPosition - originPos).normalized);
+		//}
 
-		internal Vector3 GetHitPointByDir(Vector3 originPos, Vector3 aimDirection)
+		internal Vector3 GetHitPoint(Vector3 originPos, Vector3 aimDirection)
 		{
 			RaycastHit2D hit;
 			hit = Physics2D.Raycast(originPos, aimDirection, int.MaxValue, _layerMask);

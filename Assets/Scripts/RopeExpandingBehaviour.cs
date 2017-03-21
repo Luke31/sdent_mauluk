@@ -6,52 +6,51 @@ using UnityEngine;
 
 public class RopeExpandingBehaviour : PlayerBehaviour {
 	private RopeRenderer _ropeRenderer;
-	public float RopeShootSpeed = 0.5f;
+	public float RopeShootSpeed = 2f;
 
-	private Vector3[] linePoints
+	private Vector3[] LinePoints
 	{
-		get { return new[] { originPos, ropeEnd }; }
+		get { return new[] { _originPos, _ropeEnd }; }
 	}
-	private Vector3[] invertedLinePoints
-	{
-		get { return new[] { ropeEnd, originPos }; }
-	}
-	private Vector3 originPos;
-	private Vector3 ropeDir;
-	private Vector3 ropeEnd;
+	private Vector3 _originPos;
+	private Vector3 _ropeDir;
+	private Vector3 _ropeEnd;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		Player = GameObject.Find("Player");
 		Target = GameObject.Find("Target");
+		_ropeDir = (Target.transform.position - Player.transform.position).normalized;
+		_ropeEnd = Target.transform.position;
+
 		int layerMask = LayerMask.GetMask("Player");
 		layerMask = ~layerMask;
 		
 		_ropeRenderer = new RopeRenderer(Player.GetComponentInChildren<LineRenderer>(),
 			animator.GetFloat("RopeWidth"), animator.GetFloat("RopeMinLength"),
 			layerMask);
-		_ropeRenderer.ResetRope(linePoints);
-		ropeEnd = Target.transform.position;
-		originPos = Player.transform.position;
-		var initHitPoint = _ropeRenderer.GetHitPoint(originPos, Target.transform.position);
-		ropeDir = (initHitPoint - originPos).normalized;
+		_ropeRenderer.ResetRope(LinePoints);
+		
+		_ropeRenderer.GetHitPoint(_originPos, _ropeDir);
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		originPos = Player.transform.position;
-		var hitPoint = _ropeRenderer.GetHitPointByDir(originPos, ropeDir);
-		Plane hitPlane = new Plane(ropeDir, hitPoint);
+		_originPos = Player.transform.position;
+		var hitPoint = _ropeRenderer.GetHitPoint(_originPos, _ropeDir);
+		Plane hitPlane = new Plane(_ropeDir, hitPoint);
 		
-		if (!hitPlane.GetSide(ropeEnd))
+		if (!hitPlane.GetSide(_ropeEnd))
 		{
-			ropeEnd += ropeDir * RopeShootSpeed;
-			_ropeRenderer.Update(linePoints);
+			_ropeEnd += _ropeDir * RopeShootSpeed;
+			_ropeRenderer.Update(LinePoints);
 		}
 		else
 		{
+			animator.SetFloat("InitHingeX", hitPoint.x);
+			animator.SetFloat("InitHingeY", hitPoint.y);
 			animator.SetTrigger("RopeHit");
 		}
 	}
@@ -59,7 +58,7 @@ public class RopeExpandingBehaviour : PlayerBehaviour {
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		_ropeRenderer.ResetRope(linePoints);
+		_ropeRenderer.ResetRope(LinePoints);
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
