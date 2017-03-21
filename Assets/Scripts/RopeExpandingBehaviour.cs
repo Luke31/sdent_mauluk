@@ -17,6 +17,7 @@ public class RopeExpandingBehaviour : PlayerBehaviour {
 		get { return new[] { ropeEnd, originPos }; }
 	}
 	private Vector3 originPos;
+	private Vector3 ropeDir;
 	private Vector3 ropeEnd;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -32,19 +33,20 @@ public class RopeExpandingBehaviour : PlayerBehaviour {
 			layerMask);
 		_ropeRenderer.ResetRope(linePoints);
 		ropeEnd = Target.transform.position;
+		originPos = Player.transform.position;
+		var initHitPoint = _ropeRenderer.GetHitPoint(originPos, Target.transform.position);
+		ropeDir = (initHitPoint - originPos).normalized;
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		originPos = Player.transform.position;
-		var hitPoint = _ropeRenderer.GetHitPoint(originPos, Target.transform.position);
-		Vector3 ropeDir = (hitPoint - originPos).normalized;
+		var hitPoint = _ropeRenderer.GetHitPointByDir(originPos, ropeDir);
 		Plane hitPlane = new Plane(ropeDir, hitPoint);
 		
 		if (!hitPlane.GetSide(ropeEnd))
 		{
-			Debug.Log(string.Format("RopeEnd {0}, hitPoint: {1}, dis: {2}", ropeEnd, hitPoint, Math.Abs(Vector3.Distance(ropeEnd, hitPoint))));
 			ropeEnd += ropeDir * RopeShootSpeed;
 			_ropeRenderer.Update(linePoints);
 		}
