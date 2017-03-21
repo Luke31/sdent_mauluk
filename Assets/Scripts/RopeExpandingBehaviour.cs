@@ -36,8 +36,8 @@ public class RopeExpandingBehaviour : PlayerBehaviour {
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		var hitPoint = _ropeRenderer.GetHitPoint(Player.transform.position, Target.transform.position);
 		originPos = Player.transform.position;
+		var hitPoint = _ropeRenderer.GetHitPoint(originPos, Target.transform.position);
 
 		if (Vector3.Distance(ropeEnd, hitPoint) > 5.0)
 		{
