@@ -20,7 +20,7 @@ public class LevelBuilder : MonoBehaviour
 	public GameObject collisionModelRoot;
 
 	private Sprite[] tileSprites;
-	private readonly Property collisionPropComp = new Property { Name = "ComputeCollision" };
+	private readonly Property worldCollisionComp = new Property { Name = "ComputeCollision" };
 	private readonly Property depthPropComp = new Property { Name = "Depth" };
 
 
@@ -57,15 +57,15 @@ public class LevelBuilder : MonoBehaviour
 			}
 
 
-			Property collisionProp = layer.Properties.PropertyList.Find (x => x.Equals (collisionPropComp));
-			if (collisionProp != null && collisionProp.Value == "true") {
+			Property worldCollision = layer.Properties.PropertyList.Find (x => x.Equals (worldCollisionComp));
+			if (worldCollision != null && worldCollision.Value == "true") {
 				WorldCollision (layer, dataMap);
 			}
 
 		}
 	}
 
-
+	// Computes bounding boxes that are as big as possible
 	private void WorldCollision (TiledLayer layer, int[,] dataMap)
 	{
 		bool[,] colliderMap = new bool[layer.Width, layer.Height];
