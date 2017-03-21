@@ -2,6 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 
 [XmlRoot (ElementName = "image")]
@@ -55,11 +56,31 @@ public class Data
 [XmlRoot (ElementName = "layer")]
 public class TiledLayer
 {
+	private int[,] map = null;
+
 	[XmlElement (ElementName = "properties")]
 	public Properties Properties { get; set; }
 
 	[XmlElement (ElementName = "data")]
 	public Data Data { get; set; }
+
+	public int[,] DataMap {
+		get {
+			if (map == null) {
+				string[] data = Regex.Replace (Data.Text, @"\r\n|\n", "").Split (',');
+				map = new int[Width, Height];
+
+				for (int x = 0; x < Width; x++) {
+					for (int y = 0; y < Height; y++) {
+						int dataValue = int.Parse (data [y * Width + x]) - 1;
+						map [x, y] = dataValue;
+					}
+				}
+			}
+
+			return map;
+		}
+	}
 
 	[XmlAttribute (AttributeName = "name")]
 	public string Name { get; set; }

@@ -28,8 +28,7 @@ public class LevelBuilder : MonoBehaviour
 	public void Generate (TiledMap map)
 	{
 		foreach (TiledLayer layer in map.Layer) {
-			string[] data = Regex.Replace (layer.Data.Text, @"\r\n|\n", "").Split (',');
-			int[,] dataMap = new int[layer.Width, layer.Height];
+			int[,] dataMap = layer.DataMap;
 
 			float depth = 0;
 
@@ -40,9 +39,7 @@ public class LevelBuilder : MonoBehaviour
 
 			for (int x = 0; x < layer.Width; x++) {
 				for (int y = 0; y < layer.Height; y++) {
-					int dataValue = int.Parse (data [y * layer.Width + x]) - 1;
-					dataMap [x, y] = dataValue;
-					if (dataValue >= 0) {
+					if (dataMap[x,y] >= 0) {
 						GameObject instance = Instantiate (baseTilePrefab,
 							                      new Vector3 ((x + layer.Offsetx) * tileSize + offset.x,
 								                      -(y + layer.Offsety) * tileSize + offset.y, depth),
@@ -63,6 +60,11 @@ public class LevelBuilder : MonoBehaviour
 			}
 
 		}
+	}
+
+	// Computes bounding boxes around free floating objects
+	private void ObjectCollision(TiledLayer layer, int[,] dataMap) {
+		
 	}
 
 	// Computes bounding boxes that are as big as possible
