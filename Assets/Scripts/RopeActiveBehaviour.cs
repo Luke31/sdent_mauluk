@@ -8,9 +8,10 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 
 	public float ropeWidth = 0.2f;
 	public float ropeSplitEpsilon = 0.2f;
-	public float ropeMinLength = 1f;
+	
 	public float ropeFeedSpeed = 0.5f;
 	public float ropeSwingForce = 0.6f;
+	public float ropeMinLength = 1f;
 
 	Rigidbody2D rb;
 
@@ -40,72 +41,57 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	}
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		Player = GameObject.Find("Player");
 		Target = GameObject.Find("Target");
-		_ropeRenderer = new RopeRenderer(Player.GetComponentInChildren<LineRenderer>(), animator.GetFloat("RopeWidth"), animator.GetFloat("RopeFeedSpeed"));
+		layerMask = LayerMask.GetMask("Player");
+		layerMask = ~layerMask;
+		
+		_ropeRenderer = new RopeRenderer(Player.GetComponentInChildren<LineRenderer>(), 
+			animator.GetFloat("RopeWidth"), animator.GetFloat("RopeMinLength"), 
+			layerMask);
 		
 		playerCollider = Player.GetComponentInChildren<CircleCollider2D>();
 
 		matBouncy = (PhysicsMaterial2D)Resources.Load("PlayerBouncy");
 		matStatic = (PhysicsMaterial2D)Resources.Load("PlayerStatic");
 
-		layerMask = LayerMask.GetMask("Player");
-		layerMask = ~layerMask;
-
 		resetRope();
 
 		rb = Player.GetComponent<Rigidbody2D>();
 
-		ActivateRope();
+		Vector3 hitPoint = _ropeRenderer.GetHitPoint(Player.transform.position, Target.transform.position);
+
+		ActivateHinge(hitPoint);
 	}
 
-	private void ActivateRope()
+	private void ActivateHinge(Vector3 hitPoint)
 	{
-		RaycastHit2D hit;
-		var playerPos = Player.transform.position;
-		var aimPosition = Target.transform.position;
-		var aimDirection = (aimPosition - playerPos).normalized;
-		hit = Physics2D.Raycast(playerPos, aimDirection, int.MaxValue, layerMask);
-		if (hit.collider != null)
-		{
+		linePoints[1].x = hitPoint.x;
+		linePoints[1].y = hitPoint.y;
 
-			Vector2 hullPoint = hit.collider.bounds.ClosestPoint(hit.point);
-			Vector3 hitPoint = new Vector3(hullPoint.x, hullPoint.y);
-
-			if (Vector2.Distance(hitPoint, playerPos) > ropeMinLength)
-			{
-				linePoints[1].x = hitPoint.x;
-				linePoints[1].y = hitPoint.y;
-				
-				_ropeRenderer.ActivateRope();
-
-				playerCollider.sharedMaterial = matBouncy;
-
-				hinge = Player.AddComponent(typeof(DistanceJoint2D)) as DistanceJoint2D;
-				hinge.enableCollision = true;
-				hinge.autoConfigureConnectedAnchor = false;
-				hinge.autoConfigureDistance = false;
-				hinge.connectedAnchor = linePoints[1];
-				hinge.distance = Vector3.Distance(playerPos, linePoints[1]);
-			}
-		}
+		hinge = Player.AddComponent(typeof(DistanceJoint2D)) as DistanceJoint2D;
+		hinge.enableCollision = true;
+		hinge.autoConfigureConnectedAnchor = false;
+		hinge.autoConfigureDistance = false;
+		hinge.connectedAnchor = linePoints[1];
+		hinge.distance = Vector3.Distance(Player.transform.position, linePoints[1]);
 	}
 
 
-	private Vector2 GetLeftFoce()
+	private Vector2 GetLeftForce()
 	{
 		return -Vector3.Cross(GetRopeDir(), Vector3.forward).normalized * ropeSwingForce;
 	}
 
-	private Vector2 GetRightFoce()
+	private Vector2 GetRightForce()
 	{
-		return -GetLeftFoce();
+		return -GetLeftForce();
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		
 		//Horizontal
@@ -113,9 +99,9 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		if (inputForceHor < 0)
 		{
 			//Left 
-			rb.AddForce(GetLeftFoce() * Math.Abs(inputForceHor));
+			rb.AddForce(GetLeftForce() * Math.Abs(inputForceHor));
 		}else if(inputForceHor > 0) { //Right
-			rb.AddForce(GetRightFoce() * Math.Abs(inputForceHor));
+			rb.AddForce(GetRightForce() * Math.Abs(inputForceHor));
 		}
 		animator.SetFloat("HorizontalForce", 0);
 
@@ -231,7 +217,7 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	}
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		Destroy(hinge);
 		//lineRenderer.startWidth = 0;
