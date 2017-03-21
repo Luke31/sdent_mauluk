@@ -41,11 +41,6 @@ namespace Assets.Scripts
 			_lineRenderer.endWidth = _ropeWidth;
 		}
 
-		//internal Vector3 GetHitPoint(Vector3 originPos, Vector3 aimPosition)
-		//{
-		//	return GetHitPointByDir(originPos, (aimPosition - originPos).normalized);
-		//}
-
 		internal Vector3 GetHitPoint(Vector3 originPos, Vector3 aimDirection)
 		{
 			RaycastHit2D hit;
@@ -58,12 +53,6 @@ namespace Assets.Scripts
 
 				if (Vector2.Distance(hitPoint, originPos) > ropeMinLength)
 				{
-					//_linePoints[1].x = hitPoint.x;
-					//_linePoints[1].y = hitPoint.y;
-					//_lineRenderer.startWidth = _ropeWidth;
-					//_lineRenderer.endWidth = _ropeWidth;
-					//playerCollider.sharedMaterial = matBouncy;
-
 					return hitPoint;
 					//Rope activated
 				}
