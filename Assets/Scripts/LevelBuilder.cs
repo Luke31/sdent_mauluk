@@ -21,6 +21,7 @@ public class LevelBuilder : MonoBehaviour
 	private readonly Property computeCollisionComp = new Property { Name = "ComputeCollision" };
 	private readonly Property rigidBodyComp = new Property { Name = "Rigidbody" };
 	private readonly Property rigidBodyMassComp = new Property { Name = "RigidbodyMass" };
+	private readonly Property unityLayersComp = new Property { Name = "UnityLayers" };
 	private readonly Property depthPropComp = new Property { Name = "Depth" };
 
 
@@ -28,6 +29,15 @@ public class LevelBuilder : MonoBehaviour
 	public void Generate (TiledMap map)
 	{
 		foreach (TiledLayer layer in map.Layer) {
+			int[,] dataMap = layer.DataMap;
+			bool[,] objectMap = new bool[layer.Width, layer.Height];
+			float depth = 0;
+
+			GameObject currentLayer = new GameObject (layer.Name);
+			currentLayer.transform.SetParent (levelRoot.transform);
+			GameObject currentObject = null;
+			BoxCollider2D currentCollider = null;
+
 			// Check layer properties
 			Property computeCollisionProp = layer.Properties.PropertyList.Find (x => x.Equals (computeCollisionComp));
 			bool computeCollision = computeCollisionProp != null;
@@ -35,16 +45,10 @@ public class LevelBuilder : MonoBehaviour
 			Property rigidbodyProp = layer.Properties.PropertyList.Find (x => x.Equals (rigidBodyComp));
 			bool isRigidbody = rigidbodyProp != null;
 
-			int[,] dataMap = layer.DataMap;
-			bool[,] objectMap = new bool[layer.Width, layer.Height];
-
-			GameObject currentLayer = new GameObject (layer.Name);
-			currentLayer.transform.SetParent (levelRoot.transform);
-			GameObject currentObject = null;
-			BoxCollider2D currentCollider = null;
-
-
-			float depth = 0;
+			Property unityLayersProp = layer.Properties.PropertyList.Find (x => x.Equals (unityLayersComp));
+			if (unityLayersProp != null) {
+				currentLayer.layer = LayerMask.NameToLayer (unityLayersProp.Value);
+			}
 
 			Property depthProp = layer.Properties.PropertyList.Find (x => x.Equals (depthPropComp));
 			if (depthProp != null) {
@@ -57,6 +61,7 @@ public class LevelBuilder : MonoBehaviour
 						// Create parent GameObject
 						currentObject = new GameObject(x + "_" + y);
 						currentObject.transform.SetParent (currentLayer.transform);
+						currentObject.layer = currentLayer.layer;
 
 						// Compute collision box
 						if (computeCollision) {
