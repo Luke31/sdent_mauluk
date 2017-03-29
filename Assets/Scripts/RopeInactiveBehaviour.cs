@@ -13,12 +13,8 @@ public class RopeInactiveBehaviour : PlayerBehaviour {
 	Vector3 aimPosition;
 	Vector2 aimTemp;
 
-	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	override public void Enter()
 	{
-		Player = GameObject.Find("Player");
-		Target = GameObject.Find("Target");
-
 		if(aimDirection == Vector2.zero) { 
 			aimDirection = new Vector2(1, 1).normalized;
 			aimPosition = (Vector2)Player.transform.position + aimDirection * aimDistance;
@@ -35,46 +31,48 @@ public class RopeInactiveBehaviour : PlayerBehaviour {
 			Player.transform.position.y + (aimDirection.y * aimDistance), 0);
 		Target.transform.position = aimPosition;
 	}
+  
+  public override void Update(){
+    UpdateAimTarget();
+  }
 
-	//OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-	{
-		UpdateAimTarget();
-
-		var inputForce = animator.GetFloat("HorizontalForce");
-		if (inputForce < 0) { //Left 
-			aimTemp = Quaternion.AngleAxis(aimSpeed * Mathf.Abs(inputForce), Vector3.forward) * aimDirection;
-			if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
-			{
-				aimDirection.Set(aimTemp.x, aimTemp.y);
-				aimDirection.Normalize();
-			}
-		}else if (inputForce > 0)
-		{ //Right
-			aimTemp = Quaternion.AngleAxis(-aimSpeed * Mathf.Abs(inputForce), Vector3.forward) * aimDirection;
-
-			if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
-			{
-				aimDirection.Set(aimTemp.x, aimTemp.y);
-				aimDirection.Normalize();
-			}
-		}
-		animator.SetFloat("HorizontalForce", 0);
-	}
-
-	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	override public void Exit()
 	{
 		Target.GetComponent<MeshRenderer>().enabled = false;
 	}
+  
+  public override void AimLeft(float inputForce)
+	{    
+		aimTemp = Quaternion.AngleAxis(aimSpeed * Mathf.Abs(inputForce), Vector3.forward) * aimDirection;
+    if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
+    {
+      aimDirection.Set(aimTemp.x, aimTemp.y);
+      aimDirection.Normalize();
+    }
+	}
 
-	// OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
-	//override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-	//
-	//}
+	public override void AimRight(float inputForce)
+	{
+		aimTemp = Quaternion.AngleAxis(-aimSpeed * Mathf.Abs(inputForce), Vector3.forward) * aimDirection;
+    if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
+    {
+      aimDirection.Set(aimTemp.x, aimTemp.y);
+      aimDirection.Normalize();
+    }
+	}
 
-	// OnStateIK is called right after Animator.OnAnimatorIK(). Code that sets up animation IK (inverse kinematics) should be implemented here.
-	//override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-	//
-	//}
+	public override void RopeIn(float inputForce)
+	{
+		// None
+	}
+
+	public override void RopeOut(float inputForce)
+	{
+		// None
+	}
+
+  public override void Jump()
+	{
+    //TODO: Set State Rope Expanding
+	}
 }

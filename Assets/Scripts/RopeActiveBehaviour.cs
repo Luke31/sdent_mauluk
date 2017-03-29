@@ -40,12 +40,17 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	}
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	public override void Enter()
 	{
-		Player = GameObject.Find("Player");
-		Target = GameObject.Find("Target");
+		//initHinge.x = animator.GetFloat("InitHingeX");
+		//initHinge.y = animator.GetFloat("InitHingeY");
+		//ropeDir = initRopeDir;
 
-		lineRenderer = Player.GetComponentInChildren<LineRenderer>();
+		layerMask = LayerMask.GetMask("Player");
+		layerMask = ~layerMask;
+		
+		_ropeRenderer = new RopeRenderer(Player.GetComponentInChildren<LineRenderer>(), ropeWidth,ropeMinLength, layerMask);
+		
 		playerCollider = Player.GetComponentInChildren<CircleCollider2D>();
 
 		matBouncy = (PhysicsMaterial2D)Resources.Load("PlayerBouncy");
@@ -57,41 +62,14 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 
 		ActivateRope();
 	}
-
-	private void ActivateRope()
+  
+  private void ActivateHinge(Vector3 hitPoint)
 	{
-		RaycastHit2D hit;
-		var playerPos = Player.transform.position;
-		var aimPosition = Target.transform.position;
-		var aimDirection = (aimPosition - playerPos).normalized;
-		hit = Physics2D.Raycast(aimPosition, aimDirection, 99999999, ropeLayerMask.value);
-		if (hit.collider != null)
-		{
-
-			Vector2 hullPoint = hit.collider.bounds.ClosestPoint(hit.point);
-			Vector3 hitPoint = new Vector3(hullPoint.x, hullPoint.y);
-
-			if (Vector2.Distance(hitPoint, playerPos) > ropeMinLength)
-			{
-				linePoints[1].x = hitPoint.x;
-				linePoints[1].y = hitPoint.y;
-				
-				lineRenderer.startWidth = ropeWidth;
-				lineRenderer.endWidth = ropeWidth;
-				playerCollider.sharedMaterial = matBouncy;
-
-				hinge = Player.AddComponent(typeof(DistanceJoint2D)) as DistanceJoint2D;
-				hinge.enableCollision = true;
-				hinge.autoConfigureConnectedAnchor = false;
-				hinge.autoConfigureDistance = false;
-				hinge.connectedAnchor = linePoints[1];
-				hinge.distance = Vector3.Distance(playerPos, linePoints[1]);
-			}
-		}
+		linePoints[1].x = hitPoint.x;
+		linePoints[1].y = hitPoint.y;
 	}
 
-
-	private Vector2 GetLeftFoce()
+	private Vector2 GetLeftForce()
 	{
 		return -Vector3.Cross(GetRopeDir(), Vector3.forward).normalized * ropeSwingForce;
 	}
@@ -100,49 +78,40 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	{
 		return -GetLeftFoce();
 	}
-
-	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-	{
-		
-		//Horizontal
-		var inputForceHor = animator.GetFloat("HorizontalForce");
-		if (inputForceHor < 0)
-		{
-			//Left 
-			rb.AddForce(GetLeftFoce() * Math.Abs(inputForceHor));
-		}else if(inputForceHor > 0) { //Right
-			rb.AddForce(GetRightFoce() * Math.Abs(inputForceHor));
-		}
-		animator.SetFloat("HorizontalForce", 0);
-
-		//Vertical Rope
-		var inputForceRope = animator.GetFloat("VerticalForce");
-		if (inputForceRope < 0)
-		{
-			//In
-			RaycastHit2D hitFeed = Physics2D.Raycast(Player.transform.position, ropeDir, ropeFeedSpeed * 3, ropeLayerMask.value);
-			if (hitFeed.collider == null && hinge.distance - ropeFeedSpeed > ropeMinLength)
-			{
-				hinge.distance -= ropeFeedSpeed * Math.Abs(inputForceRope);
-			}
-		}
-		else if (inputForceRope > 0)
-		{ //Out
-			RaycastHit2D hitFeed = Physics2D.Raycast(Player.transform.position, -ropeDir, ropeFeedSpeed * 3, ropeLayerMask.value);
-			if (hitFeed.collider == null)
-			{
-				hinge.distance += ropeFeedSpeed * Math.Abs(inputForceRope);
-			}
-		}
-		animator.SetFloat("VerticalForce", 0);
-
-		
-		FixedUpdate();
-		Update();
+  
+  public override void AimLeft(float inputForce)
+	{    
+		rb.AddForce(GetLeftForce() * Math.Abs(inputForce));
 	}
 
-	private void Update()
+	public override void AimRight(float inputForce)
+	{
+		rb.AddForce(GetRightForce() * Math.Abs(inputForceHor));
+	}
+
+	public override void RopeIn(float inputForce)
+	{
+		RaycastHit2D hitFeed = Physics2D.Raycast(Player.transform.position, ropeDir, ropeFeedSpeed * 3, layerMask);
+    if (hitFeed.collider == null && hinge.distance - ropeFeedSpeed > ropeMinLength)
+    {
+      hinge.distance -= ropeFeedSpeed * Math.Abs(inputForce);
+    }
+	}
+  
+  public override void Jump(){
+    //TODO: Set State Rope Inactive
+  }
+
+	public override void RopeOut(float inputForce)
+	{
+		RaycastHit2D hitFeed = Physics2D.Raycast(Player.transform.position, -ropeDir, ropeFeedSpeed * 3, layerMask);
+			if (hitFeed.collider == null)
+			{
+				hinge.distance += ropeFeedSpeed * Math.Abs(inputForce);
+			}
+	}
+
+	public override void Update()
 	{
 		linePoints[0] = Player.transform.position;
 
@@ -155,7 +124,7 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		lineRenderer.SetPositions(invertedLinePoints);
 	}
 
-	private void FixedUpdate()
+	public override void FixedUpdate()
 	{
 		linePoints[0] = Player.transform.position;
 		ropeDir = linePoints[1] - linePoints[0];
@@ -227,8 +196,7 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		return linePoints[1] - linePoints[0];
 	}
 
-	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	public override void Exit()
 	{
 		Destroy(hinge);
 		lineRenderer.startWidth = 0;
@@ -236,16 +204,6 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		playerCollider.sharedMaterial = matStatic;
 		resetRope();
 	}
-
-	// OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
-	//override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-	//
-	//}
-
-	// OnStateIK is called right after Animator.OnAnimatorIK(). Code that sets up animation IK (inverse kinematics) should be implemented here.
-	//override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-	//
-	//}
 
 	private Vector2 GetClosestPointOnBoundHull(Collider2D collider, Vector2 hitPoint)
 	{

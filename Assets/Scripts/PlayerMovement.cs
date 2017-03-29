@@ -8,54 +8,57 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 	public GameState gameState;
 
 	private Animator animator;
-
-
+	private PlayerBehaviour state;
 	
 	
 	// Use this for initialization
 	void Start ()
 	{	
 		animator = GetComponent<Animator>();
+    	SetState(new RopeInactiveBehaviour);
 	}
 
+  public void SetState(PlayerBehaviour newState){
+    state?.Exit();
+    state = newState;
+    state.Enter();
+  }
 	
 
 	void FixedUpdate()
 	{
-		// check for splits in the rope
-
+		state.FixedUpdate();
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		
-		
+		state.Update();
 	}
 	
 	public void AimLeft(float inputForce)
-	{
-		animator.SetFloat("HorizontalForce", -inputForce);
+	{   
+    state.AimLeft(inputForce);
 	}
 
 	public void AimRight(float inputForce)
 	{
-		animator.SetFloat("HorizontalForce", +inputForce);
+    state.AimRight(inputForce);
 	}
 
 	public void RopeIn(float inputForce)
 	{
-		animator.SetFloat("VerticalForce", -inputForce);
+    state.RopeIn(inputForce);
 	}
 
 	public void RopeOut(float inputForce)
 	{
-		animator.SetFloat("VerticalForce", +inputForce);
+		state.RopeOut(inputForce);
 	}
 
 	public void Jump()
 	{
-		animator.SetTrigger("Jump");
+    state.Jump();
 	}
 		
 	void OnTriggerEnter2D(Collider2D other) {
