@@ -38,12 +38,22 @@ public class GameState : MonoBehaviour {
 	void Update () {
 		debugState.text = state.ToString () + "\n" + _timer.ToString();
 
+		if (Input.GetKeyDown("p")) {
+			if (state == State.Paused) {
+				state = State.Running;
+			}
+			else if (state == State.Running) {
+				state = State.Paused;
+			}
+    }
+
 		switch (_state) {
 		case State.Paused:
+			Time.timeScale = 0;
 		case State.Start:
 			state = State.Running;
 			break;
-		case State.Running: 
+		case State.Running:
 			_timer += Time.deltaTime;
 			break;
 		case State.Finished:
