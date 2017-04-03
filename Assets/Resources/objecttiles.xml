@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="32" tileheight="32" nextobjectid="6">
  <tileset firstgid="1" name="smb" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
   <image source="smb3-cb47f744294.png" width="1024" height="1024"/>
  </tileset>
@@ -60,4 +60,14 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="Object Layer 1">
+  <object id="2" name="namerect1" x="896" y="96" width="96" height="96"/>
+  <object id="3" name="namerect2" x="1186.08" y="214.349" width="64" height="96" rotation="35.7557"/>
+  <object id="4" name="nameoval" x="608" y="160" width="96" height="160">
+   <properties>
+    <property name="blabla" type="bool" value="false"/>
+   </properties>
+   <ellipse/>
+  </object>
+ </objectgroup>
 </map>

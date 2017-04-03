@@ -13,24 +13,25 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: HorizontalForce
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: VerticalForce
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Jump
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
+<<<<<<< HEAD
     m_Controller: {fileID: 0}
   - m_Name: RopeHit
     m_Type: 9
@@ -38,11 +39,15 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
+=======
+    m_Controller: {fileID: 9100000}
+>>>>>>> a5796ffed0a7085990d863cf31dda7b48c7d6e2d
   - m_Name: ConstantTrueCondition
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 1
+<<<<<<< HEAD
     m_Controller: {fileID: 0}
   - m_Name: RopeWidth
     m_Type: 1
@@ -68,6 +73,9 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
+=======
+    m_Controller: {fileID: 9100000}
+>>>>>>> a5796ffed0a7085990d863cf31dda7b48c7d6e2d
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Player
@@ -107,7 +115,13 @@ MonoBehaviour:
   ropeSplitEpsilon: 0.2
   ropeFeedSpeed: 0.5
   ropeSwingForce: 0.6
+<<<<<<< HEAD
   ropeMinLength: 1
+=======
+  ropeLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
+>>>>>>> a5796ffed0a7085990d863cf31dda7b48c7d6e2d
 --- !u!114 &114796582632680678
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -5,7 +5,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour, IGameControlTarget
 {
+	public GameState gameState;
+
 	private Animator animator;
+
+
 	
 	
 	// Use this for initialization
@@ -28,9 +32,6 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		
 		
 	}
-
-	
-
 	
 	public void AimLeft(float inputForce)
 	{
@@ -55,6 +56,10 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 	public void Jump()
 	{
 		animator.SetTrigger("Jump");
+	}
+		
+	void OnTriggerEnter2D(Collider2D other) {
+		gameState.state = GameState.State.Finished;
 	}
 
 	

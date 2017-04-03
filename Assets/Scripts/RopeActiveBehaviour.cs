@@ -13,6 +13,8 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	public float ropeSwingForce = 0.6f;
 	public float ropeMinLength = 1f;
 
+	public LayerMask ropeLayerMask = -1;
+
 	Rigidbody2D rb;
 
 	CircleCollider2D playerCollider;
@@ -21,10 +23,15 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 	PhysicsMaterial2D matStatic;
 
 	DistanceJoint2D hinge;
+<<<<<<< HEAD
 	private RopeRenderer _ropeRenderer;
 
 	int layerMask;
 	
+=======
+
+	LineRenderer lineRenderer;
+>>>>>>> a5796ffed0a7085990d863cf31dda7b48c7d6e2d
 	Vector3[] linePoints;
 	Vector2 initHinge;
 	private Vector2 ropeDir;
@@ -73,6 +80,7 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 
 	private void ActivateHinge(Vector3 hitPoint)
 	{
+<<<<<<< HEAD
 		linePoints[1].x = hitPoint.x;
 		linePoints[1].y = hitPoint.y;
 
@@ -82,6 +90,36 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		hinge.autoConfigureDistance = false;
 		hinge.connectedAnchor = linePoints[1];
 		hinge.distance = Vector3.Distance(Player.transform.position, linePoints[1]);
+=======
+		RaycastHit2D hit;
+		var playerPos = Player.transform.position;
+		var aimPosition = Target.transform.position;
+		var aimDirection = (aimPosition - playerPos).normalized;
+		hit = Physics2D.Raycast(aimPosition, aimDirection, 99999999, ropeLayerMask.value);
+		if (hit.collider != null)
+		{
+
+			Vector2 hullPoint = hit.collider.bounds.ClosestPoint(hit.point);
+			Vector3 hitPoint = new Vector3(hullPoint.x, hullPoint.y);
+
+			if (Vector2.Distance(hitPoint, playerPos) > ropeMinLength)
+			{
+				linePoints[1].x = hitPoint.x;
+				linePoints[1].y = hitPoint.y;
+				
+				lineRenderer.startWidth = ropeWidth;
+				lineRenderer.endWidth = ropeWidth;
+				playerCollider.sharedMaterial = matBouncy;
+
+				hinge = Player.AddComponent(typeof(DistanceJoint2D)) as DistanceJoint2D;
+				hinge.enableCollision = true;
+				hinge.autoConfigureConnectedAnchor = false;
+				hinge.autoConfigureDistance = false;
+				hinge.connectedAnchor = linePoints[1];
+				hinge.distance = Vector3.Distance(playerPos, linePoints[1]);
+			}
+		}
+>>>>>>> a5796ffed0a7085990d863cf31dda7b48c7d6e2d
 	}
 
 
@@ -115,7 +153,7 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		if (inputForceRope < 0)
 		{
 			//In
-			RaycastHit2D hitFeed = Physics2D.Raycast(Player.transform.position, ropeDir, ropeFeedSpeed * 3, layerMask);
+			RaycastHit2D hitFeed = Physics2D.Raycast(Player.transform.position, ropeDir, ropeFeedSpeed * 3, ropeLayerMask.value);
 			if (hitFeed.collider == null && hinge.distance - ropeFeedSpeed > ropeMinLength)
 			{
 				hinge.distance -= ropeFeedSpeed * Math.Abs(inputForceRope);
@@ -123,7 +161,7 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		}
 		else if (inputForceRope > 0)
 		{ //Out
-			RaycastHit2D hitFeed = Physics2D.Raycast(Player.transform.position, -ropeDir, ropeFeedSpeed * 3, layerMask);
+			RaycastHit2D hitFeed = Physics2D.Raycast(Player.transform.position, -ropeDir, ropeFeedSpeed * 3, ropeLayerMask.value);
 			if (hitFeed.collider == null)
 			{
 				hinge.distance += ropeFeedSpeed * Math.Abs(inputForceRope);
@@ -157,7 +195,7 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		RaycastHit2D hitSplit;
 		RaycastHit2D hitLast;
 
-		hitSplit = Physics2D.Raycast(Player.transform.position, ropeDir, ropeDir.magnitude - 0.1f, layerMask);
+		hitSplit = Physics2D.Raycast(Player.transform.position, ropeDir, ropeDir.magnitude - 0.1f, ropeLayerMask.value);
 
 		if (hitSplit.collider != null)
 		{
@@ -189,7 +227,7 @@ public class RopeActiveBehaviour : PlayerBehaviour {
 		else if (linePoints.Length > 2)
 		{
 			Vector2 lastDir = linePoints[2] - linePoints[0];
-			hitLast = Physics2D.Raycast(Player.transform.position, lastDir, lastDir.magnitude - 0.1f, layerMask);
+			hitLast = Physics2D.Raycast(Player.transform.position, lastDir, lastDir.magnitude - 0.1f, ropeLayerMask.value);
 
 			Vector2 ab = linePoints[1] - linePoints[0];
 			Vector2 bc = linePoints[2] - linePoints[1];
