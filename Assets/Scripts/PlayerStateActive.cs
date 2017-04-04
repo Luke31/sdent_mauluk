@@ -3,19 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerActiveBehaviour : PlayerState
+public class PlayerStateActive : PlayerState
 {
 	
 
-	public PlayerActiveBehaviour(GamePhysics p, PlayerMovement c) : base(p, c)
+	public PlayerStateActive(GamePhysics p, PlayerMovement c) : base(p, c)
 	{
 	}
 
-
-
 	public override void Enter()
 	{
-		
 	}
 
 	private Vector2 GetLeftForce()
@@ -64,13 +61,6 @@ public class PlayerActiveBehaviour : PlayerState
 	public override void Update()
 	{
 		Physics.linePoints[0] = Physics.Player.transform.position;
-
-		//Vector3[] invertedLinePoints = new Vector3[Physics.linePoints.Length];
-		//for (int i = 0; i < Physics.linePoints.Length; i++)
-		//{
-		//	invertedLinePoints[i] = Physics.linePoints[Physics.linePoints.Length - 1 - i];
-		//}
-
 		Physics._ropeRenderer.Update(Physics.linePoints);
 	}
 

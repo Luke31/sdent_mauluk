@@ -35,10 +35,10 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 
 		_physics.rb = _physics.Player.GetComponent<Rigidbody2D>();
 
-		_states.Add(GameStates.Inactive, new PlayerInactiveState(_physics, this));
-		_states.Add(GameStates.Expanding, new PlayerExpandingState(_physics, this));
-		_states.Add(GameStates.Active, new PlayerActiveBehaviour(_physics, this));
-		_states.Add(GameStates.Collapsing, new PlayerCollapsingState(_physics, this));
+		_states.Add(GameStates.Inactive, new PlayerStateInactive(_physics, this));
+		_states.Add(GameStates.Expanding, new PlayerStateExpanding(_physics, this));
+		_states.Add(GameStates.Active, new PlayerStateActive(_physics, this));
+		_states.Add(GameStates.Collapsing, new PlayerStateCollapsing(_physics, this));
 		SetState(GameStates.Inactive);
 	}
 

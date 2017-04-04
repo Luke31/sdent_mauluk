@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 
-public class PlayerInactiveState : PlayerState
+public class PlayerStateInactive : PlayerState
 {
 
 	public float aimDistance = 4;
@@ -15,7 +15,7 @@ public class PlayerInactiveState : PlayerState
 	Vector3 aimPosition;
 	Vector2 aimTemp;
 
-	public PlayerInactiveState(GamePhysics p, PlayerMovement c) : base(p, c)
+	public PlayerStateInactive(GamePhysics p, PlayerMovement c) : base(p, c)
 	{
 	}
 

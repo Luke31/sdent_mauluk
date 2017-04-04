@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 
-public class PlayerCollapsingState : PlayerState
+public class PlayerStateCollapsing : PlayerState
 {
-	public PlayerCollapsingState(GamePhysics p, PlayerMovement c) : base(p, c)
+	public PlayerStateCollapsing(GamePhysics p, PlayerMovement c) : base(p, c)
 	{
 	}
 
