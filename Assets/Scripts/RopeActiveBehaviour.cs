@@ -15,9 +15,6 @@ public class RopeActiveBehaviour : PlayerBehaviour
 
 	public override void Enter()
 	{
-		Physics.layerMask = LayerMask.GetMask("Player");
-		Physics.layerMask = ~Physics.layerMask;
-
 		Physics.playerCollider = Physics.Player.GetComponentInChildren<CircleCollider2D>();
 
 		Physics.matBouncy = (PhysicsMaterial2D)Resources.Load("PlayerBouncy");
@@ -48,7 +45,7 @@ public class RopeActiveBehaviour : PlayerBehaviour
 
 	public override void RopeIn(float inputForce)
 	{
-		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, Physics.ropeDir, Physics.ropeFeedSpeed * 3, Physics.layerMask);
+		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, Physics.ropeDir, Physics.ropeFeedSpeed * 3, Physics.LayerMaskWithoutPlayer);
 		if (hitFeed.collider == null && Physics.Hinge.distance - Physics.ropeFeedSpeed > Physics.ropeMinLength)
 		{
 			Physics.Hinge.distance -= Physics.ropeFeedSpeed * Math.Abs(inputForce);
@@ -62,7 +59,7 @@ public class RopeActiveBehaviour : PlayerBehaviour
 
 	public override void RopeOut(float inputForce)
 	{
-		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, -Physics.ropeDir, Physics.ropeFeedSpeed * 3, Physics.layerMask);
+		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, -Physics.ropeDir, Physics.ropeFeedSpeed * 3, Physics.LayerMaskWithoutPlayer);
 		if (hitFeed.collider == null)
 		{
 			Physics.Hinge.distance += Physics.ropeFeedSpeed * Math.Abs(inputForce);
@@ -90,7 +87,7 @@ public class RopeActiveBehaviour : PlayerBehaviour
 		RaycastHit2D hitSplit;
 		RaycastHit2D hitLast;
 
-		hitSplit = Physics2D.Raycast(Physics.Player.transform.position, Physics.ropeDir, Physics.ropeDir.magnitude - 0.1f, Physics.layerMask);
+		hitSplit = Physics2D.Raycast(Physics.Player.transform.position, Physics.ropeDir, Physics.ropeDir.magnitude - 0.1f, Physics.LayerMaskWithoutPlayer);
 
 		if (hitSplit.collider != null)
 		{
@@ -122,7 +119,7 @@ public class RopeActiveBehaviour : PlayerBehaviour
 		else if (Physics.linePoints.Length > 2)
 		{
 			Vector2 lastDir = Physics.linePoints[2] - Physics.linePoints[0];
-			hitLast = Physics2D.Raycast(Physics.Player.transform.position, lastDir, lastDir.magnitude - 0.1f, Physics.layerMask);
+			hitLast = Physics2D.Raycast(Physics.Player.transform.position, lastDir, lastDir.magnitude - 0.1f, Physics.LayerMaskWithoutPlayer);
 
 			Vector2 ab = Physics.linePoints[1] - Physics.linePoints[0];
 			Vector2 bc = Physics.linePoints[2] - Physics.linePoints[1];

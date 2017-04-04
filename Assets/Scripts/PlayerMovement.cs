@@ -26,7 +26,8 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		_physics.Player = GameObject.Find("Player");
 		_physics.Target = GameObject.Find("Target");
 		_physics.HingeObject = GameObject.Find("Hinge");
-		_physics._ropeRenderer = new RopeRenderer(_physics.Player.GetComponentInChildren<LineRenderer>(), _physics.ropeWidth, _physics.ropeMinLength, _physics.layerMask);
+		_physics.LayerMaskWithoutPlayer = ~LayerMask.GetMask("Player");
+		_physics._ropeRenderer = new RopeRenderer(_physics.Player.GetComponentInChildren<LineRenderer>(), _physics.ropeWidth, _physics.ropeMinLength, _physics.LayerMaskWithoutPlayer);
 		_states.Add(GameStates.Inactive, new RopeInactiveBehaviour(_physics, this));
 		_states.Add(GameStates.Expanding, new RopeExpandingBehaviour(_physics, this));
 		_states.Add(GameStates.Active, new RopeActiveBehaviour(_physics, this));

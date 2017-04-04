@@ -12,7 +12,7 @@ namespace Assets.Scripts
 		public GameObject Target;
 		public GameObject HingeObject;
 		public DistanceJoint2D Hinge;
-
+		public int LayerMaskWithoutPlayer;
 
 		public float ropeWidth = 0.2f;
 		public float ropeSplitEpsilon = 0.2f;
@@ -30,8 +30,6 @@ namespace Assets.Scripts
 
 
 		public RopeRenderer _ropeRenderer;
-
-		public int layerMask;
 
 		public Vector3[] linePoints = new Vector3[2];
 		public Vector2 initHinge;

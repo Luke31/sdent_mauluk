@@ -6,11 +6,6 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 {
 	public float RopeShootSpeed = 2f;
 
-	//private Vector3[] LinePoints
-	//{
-	//	get { return new[] { _originPos, _ropeEnd }; }
-	//}
-	private Vector3 _originPos;
 	private Vector3 _ropeDir;
 	private Vector3 _ropeEnd;
 	private float _ropeLength;
@@ -27,13 +22,8 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 		_ropeEnd = Physics.Target.transform.position;
 		_ropeLength = (_ropeEnd - Physics.Player.transform.position).magnitude;
 
-		int layerMask = LayerMask.GetMask("Player");
-		layerMask = ~layerMask;
-		Physics._ropeRenderer.LayerMask = layerMask;
-
 		Physics._ropeRenderer.ResetRope(Physics.linePoints);
-
-		Physics._ropeRenderer.GetHitPoint(_originPos, _ropeDir);
+		Physics._ropeRenderer.GetHitPoint(Physics.Player.transform.position, _ropeDir);
 	}
 
 	public override void Update()
@@ -44,7 +34,7 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 
 	public override void FixedUpdate()
 	{
-		_originPos = Physics.Player.transform.position;
+		Vector3 _originPos = Physics.Player.transform.position;
 		Physics.linePoints[0] = _originPos;
 		var hitPoint = Physics._ropeRenderer.GetHitPoint(_originPos, _ropeDir);
 		Plane hitPlane = new Plane(_ropeDir, hitPoint);
@@ -75,34 +65,26 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 	}
 
 	public override void Exit()
-	{
-		
-	}
-
-	public override void AimLeft(float inputForce)
-	{
-		// None
-	}
-
-	public override void AimRight(float inputForce)
-	{
-		// None
-	}
-
-	public override void RopeIn(float inputForce)
-	{
-		// None
-	}
-
-	public override void RopeOut(float inputForce)
-	{
-		// None
-	}
+	{}
 
 	public override void Jump()
 	{
 		Context.SetState(GameStates.Collapsing);
 	}
+
+	public override void AimLeft(float inputForce)
+	{}
+
+	public override void AimRight(float inputForce)
+	{}
+
+	public override void RopeIn(float inputForce)
+	{}
+
+	public override void RopeOut(float inputForce)
+	{}
+
+	
 
 	
 }
