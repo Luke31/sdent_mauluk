@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 
-public class RopeCollapsingBehaviour : PlayerBehaviour
+public class PlayerCollapsingState : PlayerState
 {
-	public RopeCollapsingBehaviour(GamePhysics p, PlayerMovement c) : base(p, c)
+	public PlayerCollapsingState(GamePhysics p, PlayerMovement c) : base(p, c)
 	{
 	}
 

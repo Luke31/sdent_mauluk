@@ -15,10 +15,10 @@ public enum GameStates
 public class PlayerMovement : MonoBehaviour, IGameControlTarget
 {
 	public GameState gameState;
-	private PlayerBehaviour _state;
+	private PlayerState _state;
 	private readonly GamePhysics _physics = new GamePhysics();
 
-	private readonly Dictionary<GameStates, PlayerBehaviour> _states = new Dictionary<GameStates, PlayerBehaviour>();
+	private readonly Dictionary<GameStates, PlayerState> _states = new Dictionary<GameStates, PlayerState>();
 
 	// Use this for initialization
 	void Start()
@@ -35,10 +35,10 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 
 		_physics.rb = _physics.Player.GetComponent<Rigidbody2D>();
 
-		_states.Add(GameStates.Inactive, new RopeInactiveBehaviour(_physics, this));
-		_states.Add(GameStates.Expanding, new RopeExpandingBehaviour(_physics, this));
-		_states.Add(GameStates.Active, new RopeActiveBehaviour(_physics, this));
-		_states.Add(GameStates.Collapsing, new RopeCollapsingBehaviour(_physics, this));
+		_states.Add(GameStates.Inactive, new PlayerInactiveState(_physics, this));
+		_states.Add(GameStates.Expanding, new PlayerExpandingState(_physics, this));
+		_states.Add(GameStates.Active, new PlayerActiveBehaviour(_physics, this));
+		_states.Add(GameStates.Collapsing, new PlayerCollapsingState(_physics, this));
 		SetState(GameStates.Inactive);
 	}
 

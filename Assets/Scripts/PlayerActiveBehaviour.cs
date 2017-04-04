@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RopeActiveBehaviour : PlayerBehaviour
+public class PlayerActiveBehaviour : PlayerState
 {
 	
 
-	public RopeActiveBehaviour(GamePhysics p, PlayerMovement c) : base(p, c)
+	public PlayerActiveBehaviour(GamePhysics p, PlayerMovement c) : base(p, c)
 	{
 	}
 

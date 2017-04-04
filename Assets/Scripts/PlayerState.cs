@@ -6,7 +6,7 @@ using Assets.Scripts;
 using UnityEngine;
 
 
-public abstract class PlayerBehaviour : IGameControlTarget
+public abstract class PlayerState : IGameControlTarget
 {
 	public abstract void Update();
 	public abstract void FixedUpdate();
@@ -21,7 +21,7 @@ public abstract class PlayerBehaviour : IGameControlTarget
 	protected GamePhysics Physics;
 	protected PlayerMovement Context;
 
-	protected PlayerBehaviour(GamePhysics p, PlayerMovement c)
+	protected PlayerState(GamePhysics p, PlayerMovement c)
 	{
 		Physics = p;
 		Context = c;

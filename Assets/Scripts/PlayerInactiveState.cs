@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 
-public class RopeInactiveBehaviour : PlayerBehaviour
+public class PlayerInactiveState : PlayerState
 {
 
 	public float aimDistance = 4;
@@ -15,7 +15,7 @@ public class RopeInactiveBehaviour : PlayerBehaviour
 	Vector3 aimPosition;
 	Vector2 aimTemp;
 
-	public RopeInactiveBehaviour(GamePhysics p, PlayerMovement c) : base(p, c)
+	public PlayerInactiveState(GamePhysics p, PlayerMovement c) : base(p, c)
 	{
 	}
 

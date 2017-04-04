@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RopeExpandingBehaviour : PlayerBehaviour
+public class PlayerExpandingState : PlayerState
 {
 	public float RopeShootSpeed = 2f;
 
@@ -10,7 +10,7 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 	private Vector3 _ropeEnd;
 	private float _ropeLength;
 
-	public RopeExpandingBehaviour(GamePhysics p, PlayerMovement c) : base(p, c)
+	public PlayerExpandingState(GamePhysics p, PlayerMovement c) : base(p, c)
 	{
 	}
 
