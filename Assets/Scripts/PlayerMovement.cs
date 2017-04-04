@@ -28,6 +28,13 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		_physics.HingeObject = GameObject.Find("Hinge");
 		_physics.LayerMaskWithoutPlayer = ~LayerMask.GetMask("Player");
 		_physics._ropeRenderer = new RopeRenderer(_physics.Player.GetComponentInChildren<LineRenderer>(), _physics.ropeWidth, _physics.ropeMinLength, _physics.LayerMaskWithoutPlayer);
+		_physics.playerCollider = _physics.Player.GetComponentInChildren<CircleCollider2D>();
+
+		_physics.matBouncy = (PhysicsMaterial2D)Resources.Load("PlayerBouncy");
+		_physics.matStatic = (PhysicsMaterial2D)Resources.Load("PlayerStatic");
+
+		_physics.rb = _physics.Player.GetComponent<Rigidbody2D>();
+
 		_states.Add(GameStates.Inactive, new RopeInactiveBehaviour(_physics, this));
 		_states.Add(GameStates.Expanding, new RopeExpandingBehaviour(_physics, this));
 		_states.Add(GameStates.Active, new RopeActiveBehaviour(_physics, this));

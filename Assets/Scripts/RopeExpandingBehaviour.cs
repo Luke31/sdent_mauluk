@@ -16,13 +16,12 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 
 	public override void Enter()
 	{
+		Physics._ropeRenderer.ResetRope(Physics.linePoints);
 		Physics.Player = GameObject.Find("Player");
 		Physics.Target = GameObject.Find("Target");
 		_ropeDir = (Physics.Target.transform.position - Physics.Player.transform.position).normalized;
 		_ropeEnd = Physics.Target.transform.position;
 		_ropeLength = (_ropeEnd - Physics.Player.transform.position).magnitude;
-
-		Physics._ropeRenderer.ResetRope(Physics.linePoints);
 		Physics._ropeRenderer.GetHitPoint(Physics.Player.transform.position, _ropeDir);
 	}
 
@@ -37,9 +36,9 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 		Vector3 _originPos = Physics.Player.transform.position;
 		Physics.linePoints[0] = _originPos;
 		var hitPoint = Physics._ropeRenderer.GetHitPoint(_originPos, _ropeDir);
-		Plane hitPlane = new Plane(_ropeDir, hitPoint);
+		var dist = (hitPoint - _originPos).magnitude;
 
-		if (!hitPlane.GetSide(_ropeEnd))
+		if (_ropeLength <= dist)
 		{
 			_ropeLength += RopeShootSpeed;
 			_ropeEnd = Physics.Player.transform.position + _ropeDir * _ropeLength;

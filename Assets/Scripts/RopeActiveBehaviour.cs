@@ -15,12 +15,7 @@ public class RopeActiveBehaviour : PlayerBehaviour
 
 	public override void Enter()
 	{
-		Physics.playerCollider = Physics.Player.GetComponentInChildren<CircleCollider2D>();
-
-		Physics.matBouncy = (PhysicsMaterial2D)Resources.Load("PlayerBouncy");
-		Physics.matStatic = (PhysicsMaterial2D)Resources.Load("PlayerStatic");
-
-		Physics.rb = Physics.Player.GetComponent<Rigidbody2D>();
+		
 	}
 
 	private Vector2 GetLeftForce()
@@ -70,13 +65,13 @@ public class RopeActiveBehaviour : PlayerBehaviour
 	{
 		Physics.linePoints[0] = Physics.Player.transform.position;
 
-		Vector3[] invertedLinePoints = new Vector3[Physics.linePoints.Length];
-		for (int i = 0; i < Physics.linePoints.Length; i++)
-		{
-			invertedLinePoints[i] = Physics.linePoints[Physics.linePoints.Length - 1 - i];
-		}
+		//Vector3[] invertedLinePoints = new Vector3[Physics.linePoints.Length];
+		//for (int i = 0; i < Physics.linePoints.Length; i++)
+		//{
+		//	invertedLinePoints[i] = Physics.linePoints[Physics.linePoints.Length - 1 - i];
+		//}
 
-		Physics._ropeRenderer.Update(invertedLinePoints);
+		Physics._ropeRenderer.Update(Physics.linePoints);
 	}
 
 	public override void FixedUpdate()
