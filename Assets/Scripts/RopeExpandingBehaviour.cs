@@ -76,7 +76,7 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 
 	public override void Exit()
 	{
-		//_ropeRenderer.ResetRope(Physics.linePoints);
+		
 	}
 
 	public override void AimLeft(float inputForce)
@@ -101,7 +101,7 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 
 	public override void Jump()
 	{
-		Context.SetState(GameStates.Inactive);
+		Context.SetState(GameStates.Collapsing);
 	}
 
 	

@@ -27,7 +27,14 @@ public class RopeCollapsingBehaviour : PlayerBehaviour
 
 	public override void Exit()
 	{
-		//None
+		ResetRope();
+	}
+
+	void ResetRope()
+	{
+		Physics.linePoints = new Vector3[2];
+
+		Physics._ropeRenderer.ResetRope(Physics.linePoints);
 	}
 
 	public override void FixedUpdate()

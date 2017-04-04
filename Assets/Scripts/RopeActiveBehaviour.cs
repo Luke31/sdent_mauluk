@@ -23,13 +23,7 @@ public class RopeActiveBehaviour : PlayerBehaviour
 		Physics.matBouncy = (PhysicsMaterial2D)Resources.Load("PlayerBouncy");
 		Physics.matStatic = (PhysicsMaterial2D)Resources.Load("PlayerStatic");
 
-		//resetRope();
-
 		Physics.rb = Physics.Player.GetComponent<Rigidbody2D>();
-
-		//Vector3 hitPoint = _ropeRenderer.GetHitPoint(Player.transform.position, initRopeDir);
-		//VhitPont = initHinge;
-		//ActivateHinge(Physics.initHinge);
 	}
 
 	private Vector2 GetLeftForce()
@@ -162,23 +156,11 @@ public class RopeActiveBehaviour : PlayerBehaviour
 
 	public override void Exit()
 	{
-		Physics.Hinge.enabled = false; //TODO: Old Destroy()
-									   //lineRenderer.startWidth = 0;
-									   //lineRenderer.endWidth = 0;
+		Physics.Hinge.enabled = false;
 		Physics.playerCollider.sharedMaterial = Physics.matStatic;
-		resetRope();
 	}
 
-	void resetRope()
-	{
-		Physics.linePoints = new Vector3[2];
-		for (int i = 0; i < Physics.linePoints.Length; i++)
-		{
-			Physics.linePoints[i] = Vector3.zero;
-		}
-
-		Physics._ropeRenderer.ResetRope(Physics.linePoints);
-	}
+	
 
 	private Vector2 GetClosestPointOnBoundHull(Collider2D collider, Vector2 hitPoint)
 	{
