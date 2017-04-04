@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 public class PlayerStateActive : PlayerState
@@ -20,9 +21,9 @@ public class PlayerStateActive : PlayerState
 		return -Vector3.Cross(GetRopeDir(), Vector3.forward).normalized * Physics.ropeSwingForce;
 	}
 
-	private Vector2 GetRightFoce()
+	private Vector2 GetRightForce()
 	{
-		return -GetLeftFoce();
+		return -GetLeftForce();
 	}
 
 	public override void AimLeft(float inputForce)
