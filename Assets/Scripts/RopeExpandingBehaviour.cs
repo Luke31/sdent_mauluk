@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class RopeExpandingBehaviour : PlayerBehaviour
 {
-	private RopeRenderer _ropeRenderer;
 	public float RopeShootSpeed = 2f;
 
 	//private Vector3[] LinePoints
@@ -14,6 +13,7 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 	private Vector3 _originPos;
 	private Vector3 _ropeDir;
 	private Vector3 _ropeEnd;
+	private float _ropeLength;
 
 	public RopeExpandingBehaviour(GamePhysics p, PlayerMovement c) : base(p, c)
 	{
@@ -25,28 +25,35 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 		Physics.Target = GameObject.Find("Target");
 		_ropeDir = (Physics.Target.transform.position - Physics.Player.transform.position).normalized;
 		_ropeEnd = Physics.Target.transform.position;
+		_ropeLength = (_ropeEnd - Physics.Player.transform.position).magnitude;
 
 		int layerMask = LayerMask.GetMask("Player");
 		layerMask = ~layerMask;
+		Physics._ropeRenderer.LayerMask = layerMask;
 
-		_ropeRenderer = new RopeRenderer(Physics.Player.GetComponentInChildren<LineRenderer>(), Physics.ropeWidth, Physics.ropeMinLength, layerMask);
-		_ropeRenderer.ResetRope(Physics.linePoints);
+		Physics._ropeRenderer.ResetRope(Physics.linePoints);
 
-		_ropeRenderer.GetHitPoint(_originPos, _ropeDir);
+		Physics._ropeRenderer.GetHitPoint(_originPos, _ropeDir);
 	}
 
 	public override void Update()
 	{
+		Physics.linePoints[0] = Physics.Player.transform.position;
+		Physics._ropeRenderer.Update(Physics.linePoints);
+	}
+
+	public override void FixedUpdate()
+	{
 		_originPos = Physics.Player.transform.position;
 		Physics.linePoints[0] = _originPos;
-		var hitPoint = _ropeRenderer.GetHitPoint(_originPos, _ropeDir);
+		var hitPoint = Physics._ropeRenderer.GetHitPoint(_originPos, _ropeDir);
 		Plane hitPlane = new Plane(_ropeDir, hitPoint);
 
 		if (!hitPlane.GetSide(_ropeEnd))
 		{
-			_ropeEnd += _ropeDir * RopeShootSpeed;
+			_ropeLength += RopeShootSpeed;
+			_ropeEnd = Physics.Player.transform.position + _ropeDir * _ropeLength;
 			Physics.linePoints[1] = _ropeEnd;
-			_ropeRenderer.Update(Physics.linePoints);
 		}
 		else
 		{
@@ -69,7 +76,7 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 
 	public override void Exit()
 	{
-		_ropeRenderer.ResetRope(Physics.linePoints);
+		//_ropeRenderer.ResetRope(Physics.linePoints);
 	}
 
 	public override void AimLeft(float inputForce)
@@ -97,8 +104,5 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 		Context.SetState(GameStates.Inactive);
 	}
 
-	public override void FixedUpdate()
-	{
-		//None
-	}
+	
 }

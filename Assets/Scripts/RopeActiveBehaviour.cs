@@ -11,27 +11,12 @@ public class RopeActiveBehaviour : PlayerBehaviour
 	{
 	}
 
-	void resetRope()
-	{
-		Physics.linePoints = new Vector3[2];
-		for (int i = 0; i < Physics.linePoints.Length; i++)
-		{
-			Physics.linePoints[i] = Vector3.zero;
-		}
 
-		Physics._ropeRenderer.ResetRope(Physics.linePoints);
-	}
 
 	public override void Enter()
 	{
-		//initHinge.x = animator.GetFloat("InitHingeX");
-		//initHinge.y = animator.GetFloat("InitHingeY");
-		//ropeDir = initRopeDir;
-
 		Physics.layerMask = LayerMask.GetMask("Player");
 		Physics.layerMask = ~Physics.layerMask;
-
-		Physics._ropeRenderer = new RopeRenderer(Physics.Player.GetComponentInChildren<LineRenderer>(), Physics.ropeWidth, Physics.ropeMinLength, Physics.layerMask);
 
 		Physics.playerCollider = Physics.Player.GetComponentInChildren<CircleCollider2D>();
 
@@ -46,12 +31,6 @@ public class RopeActiveBehaviour : PlayerBehaviour
 		//VhitPont = initHinge;
 		//ActivateHinge(Physics.initHinge);
 	}
-
-	//private void ActivateHinge(Vector3 hitPoint)
-	//{
-	//	Physics.linePoints[1].x = hitPoint.x;
-	//	Physics.linePoints[1].y = hitPoint.y;
-	//}
 
 	private Vector2 GetLeftForce()
 	{
@@ -188,6 +167,17 @@ public class RopeActiveBehaviour : PlayerBehaviour
 									   //lineRenderer.endWidth = 0;
 		Physics.playerCollider.sharedMaterial = Physics.matStatic;
 		resetRope();
+	}
+
+	void resetRope()
+	{
+		Physics.linePoints = new Vector3[2];
+		for (int i = 0; i < Physics.linePoints.Length; i++)
+		{
+			Physics.linePoints[i] = Vector3.zero;
+		}
+
+		Physics._ropeRenderer.ResetRope(Physics.linePoints);
 	}
 
 	private Vector2 GetClosestPointOnBoundHull(Collider2D collider, Vector2 hitPoint)
