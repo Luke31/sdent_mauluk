@@ -2,67 +2,78 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RopeExpandingBehaviour : PlayerBehaviour {
+public class RopeExpandingBehaviour : PlayerBehaviour
+{
 	private RopeRenderer _ropeRenderer;
 	public float RopeShootSpeed = 2f;
-  public float ropeMinLength = 1f;
-  public float ropeWidth = 0.2f;
 
-	private Vector3[] LinePoints
-	{
-		get { return new[] { _originPos, _ropeEnd }; }
-	}
+	//private Vector3[] LinePoints
+	//{
+	//	get { return new[] { _originPos, _ropeEnd }; }
+	//}
 	private Vector3 _originPos;
 	private Vector3 _ropeDir;
 	private Vector3 _ropeEnd;
 
-	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
+	public RopeExpandingBehaviour(GamePhysics p, PlayerMovement c) : base(p, c)
+	{
+	}
+
 	public override void Enter()
 	{
-		Player = GameObject.Find("Player");
+		Physics.Player = GameObject.Find("Player");
+		Physics.Target = GameObject.Find("Target");
+		_ropeDir = (Physics.Target.transform.position - Physics.Player.transform.position).normalized;
+		_ropeEnd = Physics.Target.transform.position;
 
 		int layerMask = LayerMask.GetMask("Player");
 		layerMask = ~layerMask;
-		
-		_ropeRenderer = new RopeRenderer(Player.GetComponentInChildren<LineRenderer>(), ropeWidth,ropeMinLength, layerMask);
-		_ropeRenderer.ResetRope(LinePoints);
-		
+
+		_ropeRenderer = new RopeRenderer(Physics.Player.GetComponentInChildren<LineRenderer>(), Physics.ropeWidth, Physics.ropeMinLength, layerMask);
+		_ropeRenderer.ResetRope(Physics.linePoints);
+
 		_ropeRenderer.GetHitPoint(_originPos, _ropeDir);
 	}
 
 	public override void Update()
 	{
-		_originPos = Player.transform.position;
+		_originPos = Physics.Player.transform.position;
+		Physics.linePoints[0] = _originPos;
 		var hitPoint = _ropeRenderer.GetHitPoint(_originPos, _ropeDir);
 		Plane hitPlane = new Plane(_ropeDir, hitPoint);
-		
+
 		if (!hitPlane.GetSide(_ropeEnd))
 		{
 			_ropeEnd += _ropeDir * RopeShootSpeed;
-			_ropeRenderer.Update(LinePoints);
+			Physics.linePoints[1] = _ropeEnd;
+			_ropeRenderer.Update(Physics.linePoints);
 		}
 		else
 		{
-      //TODO: Set State Rope Active
+			Physics.linePoints[1].x = hitPoint.x;
+			Physics.linePoints[1].y = hitPoint.y;
+			ActivateHinge();
+			Context.SetState(GameStates.Active);
 		}
 	}
-  
-  private void ActivateHinge(){
-    Hinge = Player.AddComponent(typeof(DistanceJoint2D)) as DistanceJoint2D;
-		Hinge.enableCollision = true;
-		Hinge.autoConfigureConnectedAnchor = false;
-		Hinge.autoConfigureDistance = false;
-		Hinge.connectedAnchor = linePoints[1];
-		Hinge.distance = Vector3.Distance(Player.transform.position, linePoints[1]);
-  }
+
+	private void ActivateHinge()
+	{
+		Physics.Hinge = Physics.Player.AddComponent(typeof(DistanceJoint2D)) as DistanceJoint2D;
+		Physics.Hinge.enableCollision = true;
+		Physics.Hinge.autoConfigureConnectedAnchor = false;
+		Physics.Hinge.autoConfigureDistance = false;
+		Physics.Hinge.connectedAnchor = Physics.linePoints[1];
+		Physics.Hinge.distance = Vector3.Distance(Physics.Player.transform.position, Physics.linePoints[1]);
+	}
 
 	public override void Exit()
 	{
-		_ropeRenderer.ResetRope(LinePoints);
+		_ropeRenderer.ResetRope(Physics.linePoints);
 	}
 
-  public override void AimLeft(float inputForce)
-	{    
+	public override void AimLeft(float inputForce)
+	{
 		// None
 	}
 
@@ -80,9 +91,14 @@ public class RopeExpandingBehaviour : PlayerBehaviour {
 	{
 		// None
 	}
-  
-  public override void Jump()
+
+	public override void Jump()
 	{
-		//TODO: Set State Rope Inactive
+		Context.SetState(GameStates.Inactive);
+	}
+
+	public override void FixedUpdate()
+	{
+		//None
 	}
 }
