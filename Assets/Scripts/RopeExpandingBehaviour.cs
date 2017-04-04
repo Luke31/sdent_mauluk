@@ -27,30 +27,31 @@ public class RopeExpandingBehaviour : PlayerBehaviour
 
 	public override void Update()
 	{
-		Physics.linePoints[0] = Physics.Player.transform.position;
-		Physics._ropeRenderer.Update(Physics.linePoints);
-	}
-
-	public override void FixedUpdate()
-	{
-		Vector3 _originPos = Physics.Player.transform.position;
-		Physics.linePoints[0] = _originPos;
-		var hitPoint = Physics._ropeRenderer.GetHitPoint(_originPos, _ropeDir);
-		var dist = (hitPoint - _originPos).magnitude;
+		Vector3 originPos = Physics.Player.transform.position;
+		Physics.linePoints[0] = originPos;
+		var hitPoint = Physics._ropeRenderer.GetHitPoint(originPos, _ropeDir);
+		var dist = (hitPoint - originPos).magnitude;
 
 		if (_ropeLength <= dist)
 		{
 			_ropeLength += RopeShootSpeed;
 			_ropeEnd = Physics.Player.transform.position + _ropeDir * _ropeLength;
 			Physics.linePoints[1] = _ropeEnd;
+			Physics._ropeRenderer.Update(Physics.linePoints);
 		}
 		else
 		{
 			Physics.linePoints[1].x = hitPoint.x;
 			Physics.linePoints[1].y = hitPoint.y;
 			ActivateHinge();
+			Physics._ropeRenderer.Update(Physics.linePoints);
 			Context.SetState(GameStates.Active);
 		}
+	}
+
+	public override void FixedUpdate()
+	{
+		// Moved to Update due to rope-render issues
 	}
 
 	private void ActivateHinge()
