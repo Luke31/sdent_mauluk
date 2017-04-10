@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-	class RopeRenderer
+	public class RopeRenderer
 	{
 		private readonly float _ropeWidth;
 		private readonly float _ropeMinLength;
-		private readonly int _layerMask;
+		public int LayerMask { get; set; }
 		private readonly LineRenderer _lineRenderer;
 		public float ropeMinLength = 1f;
 
@@ -20,7 +20,7 @@ namespace Assets.Scripts
 			_ropeWidth = ropeWidth;
 			_ropeMinLength = ropeMinLength;
 
-			_layerMask = layerMask; ;
+			LayerMask = layerMask;
 		}
 
 		internal void ResetRope(Vector3[] linePoints)
@@ -44,7 +44,7 @@ namespace Assets.Scripts
 		internal Vector3 GetHitPoint(Vector3 originPos, Vector3 aimDirection)
 		{
 			RaycastHit2D hit;
-			hit = Physics2D.Raycast(originPos, aimDirection, int.MaxValue, _layerMask);
+			hit = Physics2D.Raycast(originPos, aimDirection, int.MaxValue, LayerMask);
 			if (hit.collider != null)
 			{
 
