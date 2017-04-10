@@ -54,6 +54,9 @@ public class GameState : MonoBehaviour {
 			state = State.Running;
 			break;
 		case State.Running:
+			if (!Time.timeScale) {
+				Time.timeScale = 1;
+			}
 			_timer += Time.deltaTime;
 			break;
 		case State.Finished:
