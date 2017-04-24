@@ -310,6 +310,7 @@ MonoBehaviour:
   levelRoot: {fileID: 695964127}
   player: {fileID: 1318754891}
   spriteSheetTexture: {fileID: 2800000, guid: 744c425bc41f10f49b71a45c6ebb0194, type: 3}
+  spriteSheetNormal: {fileID: 0}
   baseTilePrefab: {fileID: 1323275869419726, guid: 94919e8a00180354ebd7d7ab143bb9d4,
     type: 2}
   tiledFile: {fileID: 4900000, guid: 5c447a67a648f41839963098c97fae11, type: 3}
@@ -500,9 +501,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1149448670}
-  - component: {fileID: 1149448669}
-  - component: {fileID: 1149448668}
   - component: {fileID: 1149448666}
+  - component: {fileID: 1149448667}
   m_Layer: 8
   m_Name: Visual
   m_TagString: Untagged
@@ -614,20 +614,20 @@ TrailRenderer:
     textureMode: 0
   m_MinVertexDistance: 0.001
   m_Autodestruct: 0
---- !u!23 &1149448668
-MeshRenderer:
+--- !u!212 &1149448667
+SpriteRenderer:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1149448665}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -635,23 +635,20 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_PreserveUVs: 1
+  m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_SelectedEditorRenderState: 3
+  m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
---- !u!33 &1149448669
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1149448665}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 93feda7c5521ab043b86e76415bf4b5f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
 --- !u!4 &1149448670
 Transform:
   m_ObjectHideFlags: 0
@@ -1016,6 +1013,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameState: {fileID: 695964130}
+  RopeLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!50 &1952089910
 Rigidbody2D:
   serializedVersion: 4
