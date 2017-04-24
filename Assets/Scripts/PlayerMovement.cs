@@ -15,7 +15,8 @@ public enum GameStates
 public class PlayerMovement : MonoBehaviour, IGameControlTarget
 {
 	public GameState gameState;
-	private PlayerState _state;
+    public LayerMask RopeLayerMask;
+    private PlayerState _state;
 	private readonly GamePhysics _physics = new GamePhysics();
 
 	private readonly Dictionary<GameStates, PlayerState> _states = new Dictionary<GameStates, PlayerState>();
@@ -26,7 +27,7 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		_physics.Player = GameObject.Find("Player");
 		_physics.Target = GameObject.Find("Target");
 		_physics.HingeObject = GameObject.Find("Hinge");
-		_physics.LayerMaskWithoutPlayer = ~LayerMask.GetMask("Player");
+		_physics.LayerMaskWithoutPlayer = RopeLayerMask;
 		_physics._ropeRenderer = new RopeRenderer(_physics.Player.GetComponentInChildren<LineRenderer>(), _physics.ropeWidth, _physics.ropeMinLength, _physics.LayerMaskWithoutPlayer);
 		_physics.playerCollider = _physics.Player.GetComponentInChildren<CircleCollider2D>();
 
