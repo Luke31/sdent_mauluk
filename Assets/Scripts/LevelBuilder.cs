@@ -13,8 +13,9 @@ public class LevelBuilder : MonoBehaviour
 
     public Texture2D spriteSheetTexture;
     public Texture2D spriteSheetNormal;
-    public GameObject baseTilePrefab;
     public TextAsset tiledFile;
+    public GameObject baseTilePrefab;
+    public GameObject waterPrefab;
 
     public Vector3 offset;
     public float tileSize;
@@ -173,27 +174,37 @@ public class LevelBuilder : MonoBehaviour
         {
             GameObject currentParent = new GameObject(group.Name);
             currentParent.transform.SetParent(transform);
-
+            Rect helpRect = new Rect();
             foreach (TiledObject tiledObject in group.Object)
             {
                 GameObject currentObject = new GameObject(tiledObject.Name);
                 currentObject.transform.SetParent(currentParent.transform);
+
+                helpRect.Set(
+                    offset.x + (tiledObject.X / map.Tilewidth) * tileSize - tileSize / 2f,
+                    offset.y - (tiledObject.Y / map.Tileheight) * tileSize + tileSize / 2f,
+                    (tiledObject.Width / map.Tilewidth) * tileSize,
+                    -(tiledObject.Height / map.Tileheight) * tileSize);
 
                 switch (tiledObject.Type)
                 {
                     case TiledObjectType.Spawn:
                         if (player != null)
                         {
-                            Vector3 spawn = new Vector3(
-                                offset.x + (tiledObject.X / map.Tilewidth) * tileSize,
-                                offset.y + (-tiledObject.Y / map.Tileheight) * tileSize,
-                                0);
+                            Vector3 spawn = helpRect.center;
                             player.transform.position = spawn;
                         }
                         break;
                     case TiledObjectType.Goal:
                         break;
                     case TiledObjectType.Water:
+                        GameObject instance = Instantiate(waterPrefab,
+                            helpRect.center,
+                            Quaternion.identity);
+
+                        instance.transform.SetParent(currentObject.transform);
+                        instance.transform.localScale = new Vector3(helpRect.width, helpRect.height, 1);
+                        instance.transform.localScale *= 1.566666f;
                         break;
                     case TiledObjectType.Gravity:
                         break;
