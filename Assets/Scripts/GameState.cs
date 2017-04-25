@@ -26,6 +26,7 @@ public class GameState : MonoBehaviour {
 	}
 
 	private State _state;
+	private State _prev;
 	private double _timer;
 
 
@@ -51,13 +52,20 @@ public class GameState : MonoBehaviour {
 			_timer += Time.deltaTime;
 			break;
 		case State.Finished:
-			Pause();
-			SceneManager.LoadScene("dev_fmauro", LoadSceneMode.Single); //finished
+			if(_prev != _state) { 
+				Pause();
+				LevelBuilder builder = GetComponent<LevelBuilder>();
+				builder.IncCurLevel();
+				SceneManager.LoadScene("dev_fmauro", LoadSceneMode.Single); //finished
+				Continue();
+			}
 			break;
 		case State.Dead:
 			Pause();
 			break;
 		}
+
+		_prev = _state;
 	}
 
 	private void Pause()

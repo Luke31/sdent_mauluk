@@ -13,7 +13,7 @@ public class LevelBuilder : MonoBehaviour
 
     public Texture2D spriteSheetTexture;
     public Texture2D spriteSheetNormal;
-    public TextAsset tiledFile;
+    private TextAsset tiledFile;
     public GameObject baseTilePrefab;
     public GameObject waterPrefab;
 	public GameObject goalPrefab;
@@ -28,11 +28,28 @@ public class LevelBuilder : MonoBehaviour
     private readonly Property unityLayersComp = new Property { Name = "UnityLayers" };
     private readonly Property depthPropComp = new Property { Name = "Depth" };
 
+	private static int CurrentLevel = 1;
+
+	TextAsset GetCurrentLevel()
+	{
+		return (TextAsset)Resources.Load(string.Format("Levels\\level{1}", Path.DirectorySeparatorChar, CurrentLevel), typeof(TextAsset));
+	}
+
+	public void IncCurLevel()
+	{
+		CurrentLevel++;
+	}
+
+	public void Generate()
+	{
+		tiledFile = GetCurrentLevel();
+		tileSprites = Resources.LoadAll<Sprite>(string.Format("Levels\\{0}",spriteSheetTexture.name));
+
+		XmlSerializer serializer = new XmlSerializer(typeof(TiledMap));
+		TiledMap map = (TiledMap)serializer.Deserialize(new MemoryStream(tiledFile.bytes));
 
 
-    public void Generate(TiledMap map)
-    {
-        foreach (TiledLayer layer in map.Layer)
+		foreach (TiledLayer layer in map.Layer)
         {
             int[,] dataMap = layer.DataMap;
             bool[,] objectMap = new bool[layer.Width, layer.Height];
@@ -40,6 +57,7 @@ public class LevelBuilder : MonoBehaviour
 
             GameObject currentLayer = new GameObject(layer.Name);
             currentLayer.transform.SetParent(levelRoot.transform);
+			
             GameObject currentObject = null;
             BoxCollider2D currentCollider = null;
 
@@ -175,7 +193,7 @@ public class LevelBuilder : MonoBehaviour
         {
 			GameObject instance;
             GameObject currentParent = new GameObject(group.Name);
-            currentParent.transform.SetParent(transform);
+            currentParent.transform.SetParent(levelRoot.transform);
             Rect helpRect = new Rect();
             foreach (TiledObject tiledObject in group.Object)
             {
@@ -228,12 +246,7 @@ public class LevelBuilder : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        tileSprites = Resources.LoadAll<Sprite>(spriteSheetTexture.name);
-
-        XmlSerializer serializer = new XmlSerializer(typeof(TiledMap));
-        TiledMap map = (TiledMap)serializer.Deserialize(new MemoryStream(tiledFile.bytes));
-
-        Generate(map);
+        Generate();
     }
 
     // Update is called once per frame
