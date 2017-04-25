@@ -204,7 +204,7 @@ public class LevelBuilder : MonoBehaviour
 
                         instance.transform.SetParent(currentObject.transform);
                         instance.transform.localScale = new Vector3(helpRect.width, helpRect.height, 1);
-                        instance.transform.localScale *= 1.566666f;
+                        //instance.transform.localScale *= 1.566666f;
                         break;
                     case TiledObjectType.Gravity:
                         break;
