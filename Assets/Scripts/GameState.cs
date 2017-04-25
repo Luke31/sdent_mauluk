@@ -52,7 +52,7 @@ public class GameState : MonoBehaviour {
 			break;
 		case State.Finished:
 			Pause();
-			SceneManager.LoadScene("finished", LoadSceneMode.Single);
+			SceneManager.LoadScene("dev_fmauro", LoadSceneMode.Single); //finished
 			break;
 		case State.Dead:
 			Pause();
