@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameState : MonoBehaviour {
@@ -40,18 +41,33 @@ public class GameState : MonoBehaviour {
 
 		switch (_state) {
 		case State.Paused:
+			Pause();
+			break;
 		case State.Start:
 			state = State.Running;
+			Continue();
 			break;
 		case State.Running: 
 			_timer += Time.deltaTime;
 			break;
 		case State.Finished:
+			Pause();
+			SceneManager.LoadScene("finished", LoadSceneMode.Single);
+			break;
 		case State.Dead:
+			Pause();
 			break;
 		}
 	}
 
+	private void Pause()
+	{
+		Time.timeScale = 0; //Time.realtimeSinceStartup not affected!
+	}
 
+	private void Continue()
+	{
+		Time.timeScale = 1; //Time.realtimeSinceStartup not affected!
+	}
 
 }
