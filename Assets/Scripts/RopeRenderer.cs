@@ -29,13 +29,13 @@ namespace Assets.Scripts
 			_lineRenderer.startWidth = 0;
 			_lineRenderer.endWidth = 0;
 
-			_lineRenderer.numPositions = linePoints.Length;
+			_lineRenderer.positionCount = linePoints.Length;
 			_lineRenderer.SetPositions(linePoints);
 		}
 
 		internal void Update(Vector3[] invertedLinePoints)
 		{
-			_lineRenderer.numPositions = invertedLinePoints.Length;
+			_lineRenderer.positionCount = invertedLinePoints.Length;
 			_lineRenderer.SetPositions(invertedLinePoints);
 			_lineRenderer.startWidth = _ropeWidth;
 			_lineRenderer.endWidth = _ropeWidth;
