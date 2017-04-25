@@ -16,6 +16,7 @@ public class LevelBuilder : MonoBehaviour
     public TextAsset tiledFile;
     public GameObject baseTilePrefab;
     public GameObject waterPrefab;
+	public GameObject goalPrefab;
 
     public Vector3 offset;
     public float tileSize;
@@ -172,6 +173,7 @@ public class LevelBuilder : MonoBehaviour
 
         foreach (Objectgroup group in map.Objectgroup)
         {
+			GameObject instance;
             GameObject currentParent = new GameObject(group.Name);
             currentParent.transform.SetParent(transform);
             Rect helpRect = new Rect();
@@ -184,7 +186,9 @@ public class LevelBuilder : MonoBehaviour
                     offset.x + (tiledObject.X / map.Tilewidth) * tileSize - tileSize / 2f,
                     offset.y - (tiledObject.Y / map.Tileheight) * tileSize + tileSize / 2f,
                     (tiledObject.Width / map.Tilewidth) * tileSize,
-                    -(tiledObject.Height / map.Tileheight) * tileSize);
+                    (tiledObject.Height / map.Tileheight) * tileSize);
+
+				helpRect.y -= helpRect.height;
 
                 switch (tiledObject.Type)
                 {
@@ -196,15 +200,20 @@ public class LevelBuilder : MonoBehaviour
                         }
                         break;
                     case TiledObjectType.Goal:
+						instance = Instantiate(goalPrefab,
+						helpRect.center,
+						Quaternion.identity);
+
+						instance.transform.SetParent(currentObject.transform);
+						instance.transform.localScale = new Vector3(helpRect.width, helpRect.height, 1);
                         break;
                     case TiledObjectType.Water:
-                        GameObject instance = Instantiate(waterPrefab,
+                        instance = Instantiate(waterPrefab,
                             helpRect.center,
                             Quaternion.identity);
 
                         instance.transform.SetParent(currentObject.transform);
                         instance.transform.localScale = new Vector3(helpRect.width, helpRect.height, 1);
-                        //instance.transform.localScale *= 1.566666f;
                         break;
                     case TiledObjectType.Gravity:
                         break;
