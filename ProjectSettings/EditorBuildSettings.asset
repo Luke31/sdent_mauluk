@@ -7,3 +7,10 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/dev_fmauro.unity
+    guid: 9b0415e113015574d9be34b4b5ca0cf9
+  - enabled: 1
+    path: Assets/finished.unity
+    guid: 5b044b3e53974d04b954fd2fdb252023
+  - enabled: 1
+    path: Assets/level1.unity
+    guid: b4b1ca71c9021674e924af6751ebf5b5
