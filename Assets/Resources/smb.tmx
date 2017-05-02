@@ -144,16 +144,6 @@
  <objectgroup name="Logic">
   <object id="5" name="spawn01" type="Spawn" x="2048" y="224" width="32" height="32"/>
   <object id="7" name="goal01" type="Goal" x="2720" y="896" width="96" height="96"/>
-  <object id="13" name="door01" type="Door" x="1472" y="320" width="96" height="96">
-   <properties>
-    <property name="Key" type="int" value="0"/>
-   </properties>
-  </object>
-  <object id="14" name="key01" type="Key" x="416" y="960" width="32" height="32">
-   <properties>
-    <property name="Key" type="int" value="0"/>
-   </properties>
-  </object>
  </objectgroup>
  <objectgroup name="Effects">
   <object id="9" name="water01" type="Water" x="1216" y="992" width="160" height="64"/>

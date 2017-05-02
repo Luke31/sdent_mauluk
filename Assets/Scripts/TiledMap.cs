@@ -169,9 +169,7 @@ public enum TiledObjectType
     Spawn,
     Goal,
     Water,
-    Gravity,
-    Door,
-    Key
+    Gravity
 }
 
 [XmlRoot(ElementName = "objectgroup")]
