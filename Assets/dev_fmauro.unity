@@ -213,7 +213,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelRoot: {fileID: 973435190}
   player: {fileID: 1318754891}
-  spriteSheetTexture: {fileID: 2800000, guid: 5833c829d5943e94d83a483a01b4853f, type: 3}
+  spriteSheetTexture: {fileID: 2800000, guid: ad1ce475dba3ef54b87a69dc617b7a28, type: 3}
   spriteSheetNormal: {fileID: 0}
   baseTilePrefab: {fileID: 1323275869419726, guid: 94919e8a00180354ebd7d7ab143bb9d4,
     type: 2}
