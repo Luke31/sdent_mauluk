@@ -61,7 +61,12 @@ public class GameState : MonoBehaviour {
 			}
 			break;
 		case State.Dead:
-			Pause();
+			if (_prev != _state)
+			{
+				Pause();
+				SceneManager.LoadScene("dev_fmauro", LoadSceneMode.Single); //finished
+				Continue();
+			}
 			break;
 		}
 
