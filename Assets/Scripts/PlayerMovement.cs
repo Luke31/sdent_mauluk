@@ -88,8 +88,15 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 	}
 		
 	void OnTriggerEnter2D(Collider2D other) {
-		gameState.state = GameState.State.Finished;
+		switch (other.tag) {
+			case "Finish":
+				gameState.state = GameState.State.Finished;
+				break;
+			case "Death":
+				gameState.state = GameState.State.Dead;	
+				break;
+		}
 	}
-
-
 }
+
+

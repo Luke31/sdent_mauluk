@@ -213,13 +213,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelRoot: {fileID: 973435190}
   player: {fileID: 1318754891}
-  spriteSheetTexture: {fileID: 2800000, guid: 5833c829d5943e94d83a483a01b4853f, type: 3}
+  spriteSheetTexture: {fileID: 2800000, guid: ad1ce475dba3ef54b87a69dc617b7a28, type: 3}
   spriteSheetNormal: {fileID: 0}
   baseTilePrefab: {fileID: 1323275869419726, guid: 94919e8a00180354ebd7d7ab143bb9d4,
     type: 2}
   waterPrefab: {fileID: 1634085428925576, guid: 7157a4d3c60786d4a989e7b47ab77eb6,
     type: 2}
   goalPrefab: {fileID: 1160320842184444, guid: 795b4ca21afdd447e9075503abcd1829, type: 2}
+  deathPrefab: {fileID: 1899449971980572, guid: 187570c231e17f341a6539d3c4621a44,
+    type: 2}
+  deathCirclePrefab: {fileID: 1995584226350020, guid: 7f884756c859ef24a8c405dcfb83c33e,
+    type: 2}
   offset: {x: 0, y: 0, z: 0}
   tileSize: 3
 --- !u!114 &695964130

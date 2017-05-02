@@ -17,8 +17,10 @@ public class LevelBuilder : MonoBehaviour
     public GameObject baseTilePrefab;
     public GameObject waterPrefab;
 	public GameObject goalPrefab;
+	public GameObject deathPrefab;
+	public GameObject deathCirclePrefab;
 
-    public Vector3 offset;
+	public Vector3 offset;
     public float tileSize;
 
     private Sprite[] tileSprites;
@@ -233,7 +235,23 @@ public class LevelBuilder : MonoBehaviour
                         instance.transform.SetParent(currentObject.transform);
                         instance.transform.localScale = new Vector3(helpRect.width, helpRect.height, 1);
                         break;
-                    case TiledObjectType.Gravity:
+					case TiledObjectType.Death:
+						instance = Instantiate(deathPrefab,
+						helpRect.center,
+						Quaternion.identity);
+
+						instance.transform.SetParent(currentObject.transform);
+						instance.transform.localScale = new Vector3(helpRect.width, helpRect.height, 1);
+						break;
+					case TiledObjectType.DeathCircle:
+						instance = Instantiate(deathCirclePrefab,
+						helpRect.center,
+						Quaternion.identity);
+
+						instance.transform.SetParent(currentObject.transform);
+						instance.transform.localScale = new Vector3(helpRect.width, helpRect.height, 1);
+						break;
+					case TiledObjectType.Gravity:
                         break;
                     default:
                         Destroy(currentObject);

@@ -169,6 +169,8 @@ public enum TiledObjectType
     Spawn,
     Goal,
     Water,
+	Death,
+	DeathCircle,
     Gravity
 }
 
