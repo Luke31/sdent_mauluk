@@ -30,10 +30,12 @@ public class LevelBuilder : MonoBehaviour
     private readonly Property unityLayersComp = new Property { Name = "UnityLayers" };
     private readonly Property depthPropComp = new Property { Name = "Depth" };
 
+	public int StartLevel = 1;
 	private static int CurrentLevel = 1;
 
 	TextAsset GetCurrentLevel()
 	{
+		CurrentLevel = StartLevel;
 		return (TextAsset)Resources.Load(string.Format("Levels\\level{1}", Path.DirectorySeparatorChar, CurrentLevel), typeof(TextAsset));
 	}
 
@@ -117,6 +119,7 @@ public class LevelBuilder : MonoBehaviour
 
                         // grow box horizontally
                         int rectWidth = 1;
+	                    int rectHeight = 1;
                         for (int xx = x + 1; xx < layer.Width; xx++)
                         {
                             if (dataMap[xx, y] >= 0)
@@ -154,7 +157,9 @@ public class LevelBuilder : MonoBehaviour
                             }
                             else
                             {
-                                if (computeCollision)
+	                            rectHeight++;
+
+								if (computeCollision)
                                 {
                                     currentCollider.size += new Vector2(0, tileSize);
                                     currentCollider.offset -= new Vector2(0, tileSize / 2f);
@@ -166,25 +171,29 @@ public class LevelBuilder : MonoBehaviour
                                 }
                             }
                         }
-                    }
 
-                    // Instantiate tile
-                    if (dataMap[x, y] >= 0)
-                    {
-                        // Instantiate tile
-                        GameObject instance = Instantiate(baseTilePrefab,
-                                                                    new Vector3((x + layer.Offsetx) * tileSize + offset.x,
-                                                                        -(y + layer.Offsety) * tileSize + offset.y, depth),
-                                                                    Quaternion.identity);
+						// Instantiate tiles per object
+	                    for (int xx = x; xx < x + rectWidth; xx++)
+	                    {
+		                    for (int yy = y; yy < y + rectHeight; yy++)
+		                    {
+			                    if (dataMap[xx, yy] >= 0)
+			                    {
+				                    // Instantiate tile
+				                    GameObject instance = Instantiate(baseTilePrefab,
+					                    new Vector3((xx + layer.Offsetx) * tileSize + offset.x,
+						                    -(yy + layer.Offsety) * tileSize + offset.y, depth),
+					                    Quaternion.identity);
 
-                        instance.transform.SetParent(currentObject.transform);
-                        instance.transform.localScale *= tileSize;
+				                    instance.transform.SetParent(currentObject.transform);
+				                    instance.transform.localScale *= tileSize;
 
-                        SpriteRenderer spriteRenderer = instance.GetComponentInChildren<SpriteRenderer>();
-                        spriteRenderer.sprite = tileSprites[dataMap[x, y]];
-                        spriteRenderer.material = Resources.Load<Material>("TileMaterial");
-
-
+				                    SpriteRenderer spriteRenderer = instance.GetComponentInChildren<SpriteRenderer>();
+				                    spriteRenderer.sprite = tileSprites[dataMap[xx, yy]];
+				                    spriteRenderer.material = Resources.Load<Material>("TileMaterial");
+			                    }
+		                    }
+	                    }
                     }
                 }
             }
