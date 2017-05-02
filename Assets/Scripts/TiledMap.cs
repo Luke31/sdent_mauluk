@@ -169,6 +169,7 @@ public enum TiledObjectType
     Spawn,
     Goal,
     Water,
+	Death,
     Gravity,
     Door,
     Key

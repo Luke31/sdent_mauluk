@@ -220,6 +220,8 @@ MonoBehaviour:
   waterPrefab: {fileID: 1634085428925576, guid: 7157a4d3c60786d4a989e7b47ab77eb6,
     type: 2}
   goalPrefab: {fileID: 1160320842184444, guid: 795b4ca21afdd447e9075503abcd1829, type: 2}
+  deathPrefab: {fileID: 1899449971980572, guid: 187570c231e17f341a6539d3c4621a44,
+    type: 2}
   offset: {x: 0, y: 0, z: 0}
   tileSize: 3
 --- !u!114 &695964130
