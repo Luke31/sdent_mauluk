@@ -93,7 +93,7 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 				gameState.state = GameState.State.Finished;
 				break;
 			case "Death":
-				gameState.state = GameState.State.Dead;
+				gameState.state = GameState.State.Dead;	
 				break;
 		}
 	}

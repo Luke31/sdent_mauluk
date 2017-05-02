@@ -170,6 +170,7 @@ public enum TiledObjectType
     Goal,
     Water,
 	Death,
+	DeathCircle,
     Gravity,
     Door,
     Key

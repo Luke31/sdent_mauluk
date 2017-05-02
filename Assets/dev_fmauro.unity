@@ -222,6 +222,8 @@ MonoBehaviour:
   goalPrefab: {fileID: 1160320842184444, guid: 795b4ca21afdd447e9075503abcd1829, type: 2}
   deathPrefab: {fileID: 1899449971980572, guid: 187570c231e17f341a6539d3c4621a44,
     type: 2}
+  deathCirclePrefab: {fileID: 1995584226350020, guid: 7f884756c859ef24a8c405dcfb83c33e,
+    type: 2}
   offset: {x: 0, y: 0, z: 0}
   tileSize: 3
 --- !u!114 &695964130
