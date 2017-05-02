@@ -30,13 +30,19 @@ public class LevelBuilder : MonoBehaviour
     private readonly Property unityLayersComp = new Property { Name = "UnityLayers" };
     private readonly Property depthPropComp = new Property { Name = "Depth" };
 
-	public int StartLevel = 1;
+	public int StartLevel = -1;
+
+	public int GetLevel()
+	{
+		return StartLevel > 0 ? StartLevel : CurrentLevel;
+	} 
+
 	private static int CurrentLevel = 1;
 
 	TextAsset GetCurrentLevel()
 	{
 		CurrentLevel = StartLevel;
-		return (TextAsset)Resources.Load(string.Format("Levels\\level{1}", Path.DirectorySeparatorChar, CurrentLevel), typeof(TextAsset));
+		return (TextAsset)Resources.Load(string.Format("Levels\\level{1}", Path.DirectorySeparatorChar, GetLevel()), typeof(TextAsset));
 	}
 
 	public void IncCurLevel()
@@ -99,7 +105,7 @@ public class LevelBuilder : MonoBehaviour
                         if (computeCollision)
                         {
                             currentCollider = currentObject.AddComponent<BoxCollider2D>();
-                            currentCollider.size = new Vector2(tileSize, tileSize);
+                            currentCollider.size = new Vector2(tileSize, tileSize) * 0.99f;
                             currentCollider.offset = new Vector2((x + layer.Offsetx) * tileSize + offset.x,
                                 -(y + layer.Offsety) * tileSize + offset.y);
                         }
@@ -179,8 +185,8 @@ public class LevelBuilder : MonoBehaviour
 		                    {
 			                    if (dataMap[xx, yy] >= 0)
 			                    {
-				                    // Instantiate tile
-				                    GameObject instance = Instantiate(baseTilePrefab,
+									// Instantiate tile
+									GameObject instance = Instantiate(baseTilePrefab,
 					                    new Vector3((xx + layer.Offsetx) * tileSize + offset.x,
 						                    -(yy + layer.Offsety) * tileSize + offset.y, depth),
 					                    Quaternion.identity);
@@ -191,7 +197,8 @@ public class LevelBuilder : MonoBehaviour
 				                    SpriteRenderer spriteRenderer = instance.GetComponentInChildren<SpriteRenderer>();
 				                    spriteRenderer.sprite = tileSprites[dataMap[xx, yy]];
 				                    spriteRenderer.material = Resources.Load<Material>("TileMaterial");
-			                    }
+									dataMap[xx, yy] = -1;
+								}
 		                    }
 	                    }
                     }
