@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.IO;
 using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 
 public class LevelBuilder : MonoBehaviour
@@ -14,8 +15,8 @@ public class LevelBuilder : MonoBehaviour
     public Texture2D spriteSheetTexture;
     public Texture2D spriteSheetNormal;
     private TextAsset tiledFile;
-    public GameObject baseTilePrefab;
-    public GameObject waterPrefab;
+	public GameObject baseTilePrefab;
+	public GameObject waterPrefab;
 	public GameObject goalPrefab;
 	public GameObject deathPrefab;
 	public GameObject deathCirclePrefab;
@@ -26,7 +27,8 @@ public class LevelBuilder : MonoBehaviour
     private Sprite[] tileSprites;
     private readonly Property computeCollisionComp = new Property { Name = "ComputeCollision" };
     private readonly Property rigidBodyComp = new Property { Name = "Rigidbody" };
-    private readonly Property rigidBodyMassComp = new Property { Name = "RigidbodyMass" };
+	private readonly Property destroyableComp = new Property { Name = "Destroyable" };
+	private readonly Property rigidBodyMassComp = new Property { Name = "RigidbodyMass" };
     private readonly Property unityLayersComp = new Property { Name = "UnityLayers" };
     private readonly Property depthPropComp = new Property { Name = "Depth" };
 
@@ -77,7 +79,10 @@ public class LevelBuilder : MonoBehaviour
             Property rigidbodyProp = layer.Properties.PropertyList.Find(x => x.Equals(rigidBodyComp));
             bool isRigidbody = rigidbodyProp != null;
 
-            Property unityLayersProp = layer.Properties.PropertyList.Find(x => x.Equals(unityLayersComp));
+			Property destroyableProp = layer.Properties.PropertyList.Find(x => x.Equals(destroyableComp));
+			bool isDestroyable = destroyableProp != null;
+
+			Property unityLayersProp = layer.Properties.PropertyList.Find(x => x.Equals(unityLayersComp));
             if (unityLayersProp != null)
             {
                 currentLayer.layer = LayerMask.NameToLayer(unityLayersProp.Value);
@@ -95,9 +100,9 @@ public class LevelBuilder : MonoBehaviour
                 {
                     if (dataMap[x, y] >= 0 && !objectMap[x, y])
                     {
-                        // Create parent GameObject
-                        currentObject = new GameObject(x + "_" + y);
-                        currentObject.transform.SetParent(currentLayer.transform);
+						// Create parent GameObject
+						currentObject = new GameObject(x + "_" + y);
+						currentObject.transform.SetParent(currentLayer.transform);
                         currentObject.layer = currentLayer.layer;
 
                         // Compute collision box
@@ -120,7 +125,12 @@ public class LevelBuilder : MonoBehaviour
                             }
                         }
 
-                        objectMap[x, y] = true;
+						if (isDestroyable)
+						{
+							currentObject.AddComponent(typeof(CollisionDamage));
+						}
+
+						objectMap[x, y] = true;
 
                         // grow box horizontally
                         int rectWidth = 1;
@@ -195,8 +205,16 @@ public class LevelBuilder : MonoBehaviour
 
 				                    SpriteRenderer spriteRenderer = instance.GetComponentInChildren<SpriteRenderer>();
 				                    spriteRenderer.sprite = tileSprites[dataMap[xx, yy]];
-				                    spriteRenderer.material = Resources.Load<Material>("TileMaterial");
-									dataMap[xx, yy] = -1;
+				                    
+				                    if (isDestroyable)
+				                    {
+										spriteRenderer.material = Resources.Load<Material>("DestroyableMaterial");
+									}
+				                    else
+				                    {
+										spriteRenderer.material = Resources.Load<Material>("TileMaterial");
+									}
+				                    dataMap[xx, yy] = -1;
 								}
 		                    }
 	                    }

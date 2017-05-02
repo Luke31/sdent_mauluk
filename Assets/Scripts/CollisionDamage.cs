@@ -8,12 +8,26 @@ public class CollisionDamage : MonoBehaviour
     [Tooltip("Number of hits needed to destroy this object")]
     public double Health = 50;
 
+	private double _initHealth;
+
     [Header("Trigger damage tag filter")]
     [Tooltip("Only objects with this tag trigger damage")]
     public string TagNameFilter = "Player";
 
     void Start ()
+    {
+		_initHealth = Health;
+		UpdateColor();
+	}
+
+	private void UpdateColor()
 	{
+		foreach (Transform child in transform)
+		{
+			Renderer rend = child.GetComponent<Renderer>();
+			rend.material.shader = Shader.Find("Specular");
+			rend.material.SetColor("_Color", new Color((float)(Health / _initHealth), 0f, 0f));
+		}
 	}
 	
 	void Update () {
@@ -26,6 +40,7 @@ public class CollisionDamage : MonoBehaviour
     {
         if (coll.gameObject.tag == TagNameFilter) { 
             Health -= coll.relativeVelocity.magnitude; //TODO: Include mass for impact
+	        UpdateColor();
         }
-    }
+	}
 }
