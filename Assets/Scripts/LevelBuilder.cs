@@ -41,7 +41,6 @@ public class LevelBuilder : MonoBehaviour
 
 	TextAsset GetCurrentLevel()
 	{
-		CurrentLevel = StartLevel;
 		return (TextAsset)Resources.Load(string.Format("Levels\\level{1}", Path.DirectorySeparatorChar, GetLevel()), typeof(TextAsset));
 	}
 
