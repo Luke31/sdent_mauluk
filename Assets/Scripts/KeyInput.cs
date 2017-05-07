@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class KeyInput : MonoBehaviour
 {
+	public GameState gameState;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -15,6 +17,9 @@ public class KeyInput : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		if (gameState.state != GameState.State.Running)
+			return;
+
 		if (Input.GetButton("AimLeft"))
 		{
 			ExecuteEvents.Execute<IGameControlTarget>(target:this.gameObject, eventData:null, functor:(x, y) => x.AimLeft(1f)); 

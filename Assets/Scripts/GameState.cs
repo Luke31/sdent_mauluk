@@ -40,7 +40,7 @@ public class GameState : MonoBehaviour {
 	void Update () {
 		debugState.text = state.ToString () + "\n" + _timer.ToString();
 
-		if (Input.GetKeyDown("p"))
+		if (Input.GetKeyDown("escape"))
 		{
 			if (state == State.Paused)
 			{
@@ -88,6 +88,8 @@ public class GameState : MonoBehaviour {
 	private void Pause()
 	{
 		Time.timeScale = 0; //Time.realtimeSinceStartup not affected!
+		Canvas c = new Canvas();
+		
 	}
 
 	private void Continue()

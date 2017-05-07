@@ -9,6 +9,7 @@ public class TouchInput : MonoBehaviour
 	private readonly Dictionary<int, TouchState> touches = new Dictionary<int, TouchState>();
 	public float inputForceMinThreshold = 0.01f;
 	public float sensitivity = 6f;
+	public GameState gameState;
 
 	// Use this for initialization
 	void Start () {
@@ -17,6 +18,9 @@ public class TouchInput : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if (gameState.state != GameState.State.Running)
+			return;
+
 		for (int i = 0; i < Input.touchCount; i++)
 		{
 			HandleTouch(Input.GetTouch(i));
