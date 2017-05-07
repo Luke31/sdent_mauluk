@@ -40,6 +40,18 @@ public class GameState : MonoBehaviour {
 	void Update () {
 		debugState.text = state.ToString () + "\n" + _timer.ToString();
 
+		if (Input.GetKeyDown("p"))
+		{
+			if (state == State.Paused)
+			{
+				state = State.Start; //Will switch to running
+			}
+			else if (state == State.Running)
+			{
+				state = State.Paused;
+			}
+		}
+
 		switch (_state) {
 		case State.Paused:
 			Pause();
