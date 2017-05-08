@@ -87,6 +87,7 @@ public class GameState : MonoBehaviour {
 
 	private void Pause()
 	{
+		GetComponents<AudioSource>()[0].Pause();
 		Time.timeScale = 0; //Time.realtimeSinceStartup not affected!
 		Canvas c = new Canvas();
 		
@@ -94,6 +95,7 @@ public class GameState : MonoBehaviour {
 
 	private void Continue()
 	{
+		GetComponents<AudioSource>()[0].Play();
 		Time.timeScale = 1; //Time.realtimeSinceStartup not affected!
 	}
 
