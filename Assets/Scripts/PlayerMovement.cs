@@ -113,20 +113,20 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		if(!src.isPlaying)
 		{
 			var strength = col.relativeVelocity.magnitude;
-			Debug.Log(strength);
+			//Debug.Log(strength);
 			if (col.otherCollider.tag == "Death")
 			{
-				src.clip = audioHit3;
+				src.clip = audioHit3; //Death hit sound
 			}
-			else if (strength < 50)
+			else if (strength < 50) //Small bump, rolling
 			{
 				src.clip = audioHit0;
 			}
-			else if (strength < 70)
+			else if (strength < 70) //Bigger bump
 			{
 				src.clip = audioHit1;
 			}
-			else
+			else //Big bump
 			{
 				src.clip = audioHit2;
 			}
