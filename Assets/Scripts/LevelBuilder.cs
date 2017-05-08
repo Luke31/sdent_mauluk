@@ -280,7 +280,7 @@ public class LevelBuilder : MonoBehaviour
 						instance = Instantiate(deathCirclePrefab,
 						helpRect.center,
 						Quaternion.identity);
-
+						
 						instance.transform.SetParent(currentObject.transform);
 						instance.transform.localScale = new Vector3(helpRect.width, helpRect.height, 1);
 						break;

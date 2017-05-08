@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Assets.Scripts;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 public enum GameStates
 {
@@ -16,7 +18,12 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 {
 	public GameState gameState;
     public LayerMask RopeLayerMask;
-    private PlayerState _state;
+	public AudioClip audioHit0;
+	public AudioClip audioHit1;
+	public AudioClip audioHit2;
+	public AudioClip audioHit3;
+
+	private PlayerState _state;
 	private readonly GamePhysics _physics = new GamePhysics();
 
 	private readonly Dictionary<GameStates, PlayerState> _states = new Dictionary<GameStates, PlayerState>();
@@ -96,7 +103,42 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 				gameState.state = GameState.State.Dead;	
 				break;
 		}
+		
+
 	}
+
+	void OnCollisionEnter2D(Collision2D col)
+	{
+		AudioSource src = GetAudioSource();
+		if(!src.isPlaying)
+		{
+			var strength = col.relativeVelocity.magnitude;
+			Debug.Log(strength);
+			if (col.otherCollider.tag == "Death")
+			{
+				src.clip = audioHit3;
+			}
+			else if (strength < 50)
+			{
+				src.clip = audioHit0;
+			}
+			else if (strength < 70)
+			{
+				src.clip = audioHit1;
+			}
+			else
+			{
+				src.clip = audioHit2;
+			}
+			src.Play();
+		}
+	}
+
+	private AudioSource GetAudioSource()
+	{
+		return GetComponents<AudioSource>()[0];
+	}
+	
 }
 
 
