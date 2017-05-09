@@ -646,7 +646,7 @@
  </objectgroup>
  <objectgroup name="Effects">
   <object id="9" name="water01" type="Water" x="3520" y="3712" width="192" height="96"/>
-  <object id="23" name="deathCircle" type="DeathCircle" x="3296" y="4576" width="192" height="192">
+  <object id="23" name="deathCircle" type="DeathCircle" x="3296" y="4672" width="96" height="96">
    <ellipse/>
   </object>
  </objectgroup>
