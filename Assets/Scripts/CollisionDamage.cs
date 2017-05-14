@@ -27,9 +27,9 @@ public class CollisionDamage : MonoBehaviour
 		foreach (Transform child in transform)
 		{
 			Renderer rend = child.GetComponent<Renderer>();
-			rend.material.shader = Shader.Find("Diffuse"); // Specular
-			float health_color = (float) (Health / _initHealth);
-			rend.material.SetColor("_Color", new Color((float)(health_color), (float)(health_color * _otherThanRedRatio), (float)(health_color * _otherThanRedRatio)));
+			rend.material.shader = Shader.Find("Standard"); //Diffuse/ Specular
+			float healthColor = (float) (Health / _initHealth);
+			rend.material.SetColor("_Color", new Color(1f, healthColor, healthColor));
 		}
 	}
 	

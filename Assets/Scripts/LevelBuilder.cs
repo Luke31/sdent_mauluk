@@ -58,7 +58,7 @@ public class LevelBuilder : MonoBehaviour
 		XmlSerializer serializer = new XmlSerializer(typeof(TiledMap));
 		TiledMap map = (TiledMap)serializer.Deserialize(new MemoryStream(tiledFile.bytes));
 
-
+		int layerIdx = 0;
 		foreach (TiledLayer layer in map.Layer)
         {
             int[,] dataMap = layer.DataMap;
@@ -203,7 +203,8 @@ public class LevelBuilder : MonoBehaviour
 				                    instance.transform.localScale *= tileSize;
 
 				                    SpriteRenderer spriteRenderer = instance.GetComponentInChildren<SpriteRenderer>();
-				                    spriteRenderer.sprite = tileSprites[dataMap[xx, yy]];
+				                    spriteRenderer.sortingOrder = layerIdx;
+									spriteRenderer.sprite = tileSprites[dataMap[xx, yy]];
 				                    
 				                    if (isDestroyable)
 				                    {
@@ -220,6 +221,7 @@ public class LevelBuilder : MonoBehaviour
                     }
                 }
             }
+	        layerIdx++;
 
         }
 
