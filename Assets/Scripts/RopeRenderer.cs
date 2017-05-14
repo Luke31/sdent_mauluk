@@ -17,13 +17,8 @@ namespace Assets.Scripts
 		internal RopeRenderer(LineRenderer lineRenderer, float ropeWidth, float ropeMinLength, int layerMask)
 		{
 			_lineRenderer = lineRenderer;
-			//_lineRenderer.
 			var renderer = _lineRenderer.GetComponent<Renderer>();
-			renderer.sortingOrder = 49;
-			//_lineRenderer.sortingLayerID = 1;
-			//_lineRenderer.sortingOrder = 1;
-			//SpriteRenderer spriteRenderer = _lineRenderer.GetComponentInChildren<SpriteRenderer>();
-			//spriteRenderer.sortingOrder = 49; //Player is 50
+			renderer.sortingOrder = 49; //Player is 50
 			_ropeWidth = ropeWidth;
 			_ropeMinLength = ropeMinLength;
 
