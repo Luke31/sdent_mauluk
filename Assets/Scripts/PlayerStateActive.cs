@@ -26,6 +26,15 @@ public class PlayerStateActive : PlayerState
 		return -GetLeftForce();
 	}
 
+	private Vector2 GetInForce()
+	{
+		return GetRopeDir().normalized * Physics.ropeSwingForce;
+	}
+	private Vector2 GetOutForce()
+	{
+		return -GetInForce();
+	}
+
 	public override void AimLeft(float inputForce)
 	{
 		Physics.rb.AddForce(GetLeftForce() * Math.Abs(inputForce));
@@ -41,6 +50,7 @@ public class PlayerStateActive : PlayerState
 		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, Physics.ropeDir, Physics.ropeFeedSpeed * 3, Physics.LayerMaskWithoutPlayer);
 		if (hitFeed.collider == null && Physics.Hinge.distance - Physics.ropeFeedSpeed > Physics.ropeMinLength)
 		{
+			Physics.rb.AddForce(GetInForce() * Math.Abs(inputForce));
 			Physics.Hinge.distance -= Physics.ropeFeedSpeed * Math.Abs(inputForce);
 		}
 	}
@@ -55,6 +65,7 @@ public class PlayerStateActive : PlayerState
 		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, -Physics.ropeDir, Physics.ropeFeedSpeed * 3, Physics.LayerMaskWithoutPlayer);
 		if (hitFeed.collider == null)
 		{
+			Physics.rb.AddForce(GetOutForce() * Math.Abs(inputForce));
 			Physics.Hinge.distance += Physics.ropeFeedSpeed * Math.Abs(inputForce);
 		}
 	}
