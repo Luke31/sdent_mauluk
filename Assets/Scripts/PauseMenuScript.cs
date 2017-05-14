@@ -32,4 +32,9 @@ public class PauseMenuScript : MonoBehaviour {
 	{
 		gameState.state = GameState.State.Start;
 	}
+
+	public void RestartLevel()
+	{
+		gameState.state = GameState.State.Dead;
+	}
 }
