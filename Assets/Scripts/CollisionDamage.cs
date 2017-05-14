@@ -6,9 +6,11 @@ public class CollisionDamage : MonoBehaviour
 {
     [Header("Health")]
     [Tooltip("Number of hits needed to destroy this object")]
-    public double Health = 50;
+    public double Health = 25;
 
 	private double _initHealth;
+
+	private double _otherThanRedRatio = 0.7f;
 
     [Header("Trigger damage tag filter")]
     [Tooltip("Only objects with this tag trigger damage")]
@@ -25,8 +27,9 @@ public class CollisionDamage : MonoBehaviour
 		foreach (Transform child in transform)
 		{
 			Renderer rend = child.GetComponent<Renderer>();
-			rend.material.shader = Shader.Find("Specular");
-			rend.material.SetColor("_Color", new Color((float)(Health / _initHealth), 0f, 0f));
+			rend.material.shader = Shader.Find("Diffuse"); // Specular
+			float health_color = (float) (Health / _initHealth);
+			rend.material.SetColor("_Color", new Color((float)(health_color), (float)(health_color * _otherThanRedRatio), (float)(health_color * _otherThanRedRatio)));
 		}
 	}
 	
