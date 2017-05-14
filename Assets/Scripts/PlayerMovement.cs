@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Assets.Scripts;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
@@ -22,6 +23,8 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 	public AudioClip audioHit1;
 	public AudioClip audioHit2;
 	public AudioClip audioHit3;
+	public AudioClip audioRopeFire;
+	public AudioClip audioRopeImpact;
 
 	private PlayerState _state;
 	private readonly GamePhysics _physics = new GamePhysics();
@@ -109,7 +112,7 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 
 	void OnCollisionEnter2D(Collision2D col)
 	{
-		AudioSource src = GetAudioSource();
+		AudioSource src = GetPlayerAudioSource();
 		if(!src.isPlaying)
 		{
 			var strength = col.relativeVelocity.magnitude;
@@ -134,11 +137,24 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		}
 	}
 
-	private AudioSource GetAudioSource()
+	private AudioSource GetPlayerAudioSource()
 	{
 		return GetComponents<AudioSource>()[0];
 	}
-	
+
+	public void PlayAudioRopeFire()
+	{
+		AudioSource src = GetPlayerAudioSource();
+		src.clip = audioRopeFire;
+		src.Play();
+	}
+	public void PlayAudioRopeImpact()
+	{
+		AudioSource src = GetPlayerAudioSource();
+		src.clip = audioRopeImpact;
+		src.Play();
+	}
+
 }
 
 

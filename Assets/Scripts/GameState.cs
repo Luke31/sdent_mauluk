@@ -37,8 +37,10 @@ public class GameState : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
-		debugState.text = state.ToString () + "\n" + _timer.ToString();
+	void Update ()
+	{
+		debugState.text = "";
+		//debugState.text = state.ToString () + "\n" + _timer.ToString();
 
 		if (Input.GetKeyDown("escape"))
 		{
@@ -87,6 +89,7 @@ public class GameState : MonoBehaviour {
 
 	private void Pause()
 	{
+		Cursor.visible = true;
 		GetComponents<AudioSource>()[0].Pause();
 		Time.timeScale = 0; //Time.realtimeSinceStartup not affected!
 		Canvas c = new Canvas();
@@ -95,6 +98,7 @@ public class GameState : MonoBehaviour {
 
 	private void Continue()
 	{
+		Cursor.visible = false;
 		GetComponents<AudioSource>()[0].Play();
 		Time.timeScale = 1; //Time.realtimeSinceStartup not affected!
 	}

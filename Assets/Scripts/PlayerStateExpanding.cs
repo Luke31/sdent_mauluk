@@ -17,6 +17,8 @@ public class PlayerStateExpanding : PlayerState
 
 	public override void Enter()
 	{
+		Context.PlayAudioRopeFire();
+
 		Physics._ropeRenderer.ResetRope(Physics.linePoints);
 		Physics.Player = GameObject.Find("Player");
 		Physics.Target = GameObject.Find("Target");

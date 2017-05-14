@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class PlayerStateActive : PlayerState
 {
-	
 
 	public PlayerStateActive(GamePhysics p, PlayerMovement c) : base(p, c)
 	{
@@ -14,6 +13,7 @@ public class PlayerStateActive : PlayerState
 
 	public override void Enter()
 	{
+		Context.PlayAudioRopeImpact();
 	}
 
 	private Vector2 GetLeftForce()
