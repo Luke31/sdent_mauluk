@@ -14,7 +14,7 @@ namespace Assets.Scripts
 		public DistanceJoint2D Hinge;
 		public int LayerMaskWithoutPlayer;
 
-		public float ropeWidth = 0.2f;
+		public float ropeWidth = 0.18f;
 		public float ropeSplitEpsilon = 0.2f;
 
 		public float ropeFeedSpeed = 0.5f;
