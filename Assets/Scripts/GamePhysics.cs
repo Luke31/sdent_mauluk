@@ -17,8 +17,8 @@ namespace Assets.Scripts
 		public float ropeWidth = 0.18f;
 		public float ropeSplitEpsilon = 0.2f;
 
-		public float ropeFeedSpeed = 0.5f;
-		public float ropeSwingForce = 0.6f;
+		public float ropeFeedSpeed = 30f; //calc use * Time.deltaTime
+		public float ropeSwingForce = 36f; //calc use * Time.deltaTime
 		public float ropeMinLength = 1f;
 
 		public Rigidbody2D rb;

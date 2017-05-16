@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerStateExpanding : PlayerState
 {
-	public float RopeShootSpeed = 2f;
+	public float RopeShootSpeed = 120f; //calc use * Time.deltaTime
 
 	private Vector3 _ropeDir;
 	private Vector3 _ropeEnd;
@@ -37,7 +37,7 @@ public class PlayerStateExpanding : PlayerState
 
 		if (_ropeLength <= dist)
 		{
-			_ropeLength += RopeShootSpeed;
+			_ropeLength += RopeShootSpeed * Time.deltaTime;
 			_ropeEnd = Physics.Player.transform.position + _ropeDir * _ropeLength;
 			Physics.linePoints[1] = _ropeEnd;
 			Physics._ropeRenderer.Update(Physics.linePoints);

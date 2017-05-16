@@ -8,7 +8,7 @@ public class PlayerStateInactive : PlayerState
 {
 
 	public float aimDistance = 4;
-	public float aimSpeed = 3;
+	public float aimSpeed = 180; //calc use * Time.deltaTime
 	public float aimMaxAngle = 90f;
 
 	Vector2 aimDirection;
@@ -51,7 +51,7 @@ public class PlayerStateInactive : PlayerState
 
 	public override void AimLeft(float inputForce)
 	{
-		aimTemp = Quaternion.AngleAxis(aimSpeed * Mathf.Abs(inputForce), Vector3.forward) * aimDirection;
+		aimTemp = Quaternion.AngleAxis(aimSpeed * Time.deltaTime * Mathf.Abs(inputForce), Vector3.forward) * aimDirection;
 		if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
 		{
 			aimDirection.Set(aimTemp.x, aimTemp.y);
@@ -61,7 +61,7 @@ public class PlayerStateInactive : PlayerState
 
 	public override void AimRight(float inputForce)
 	{
-		aimTemp = Quaternion.AngleAxis(-aimSpeed * Mathf.Abs(inputForce), Vector3.forward) * aimDirection;
+		aimTemp = Quaternion.AngleAxis(-aimSpeed * Time.deltaTime * Mathf.Abs(inputForce), Vector3.forward) * aimDirection;
 		if (Vector2.Angle(aimTemp, Vector2.up) < aimMaxAngle)
 		{
 			aimDirection.Set(aimTemp.x, aimTemp.y);

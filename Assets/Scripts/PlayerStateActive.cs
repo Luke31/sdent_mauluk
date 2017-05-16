@@ -37,21 +37,21 @@ public class PlayerStateActive : PlayerState
 
 	public override void AimLeft(float inputForce)
 	{
-		Physics.rb.AddForce(GetLeftForce() * Math.Abs(inputForce));
+		Physics.rb.AddForce(GetLeftForce() * Math.Abs(inputForce) * Time.deltaTime);
 	}
 
 	public override void AimRight(float inputForce)
 	{
-		Physics.rb.AddForce(GetRightForce() * Math.Abs(inputForce));
+		Physics.rb.AddForce(GetRightForce() * Math.Abs(inputForce) * Time.deltaTime);
 	}
 
 	public override void RopeIn(float inputForce)
 	{
-		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, Physics.ropeDir, Physics.ropeFeedSpeed * 3, Physics.LayerMaskWithoutPlayer);
-		if (hitFeed.collider == null && Physics.Hinge.distance - Physics.ropeFeedSpeed > Physics.ropeMinLength)
+		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, Physics.ropeDir, Physics.ropeFeedSpeed * Time.deltaTime * 3, Physics.LayerMaskWithoutPlayer);
+		if (hitFeed.collider == null && Physics.Hinge.distance - Physics.ropeFeedSpeed * Time.deltaTime > Physics.ropeMinLength)
 		{
-			Physics.rb.AddForce(GetInForce() * Math.Abs(inputForce));
-			Physics.Hinge.distance -= Physics.ropeFeedSpeed * Math.Abs(inputForce);
+			Physics.rb.AddForce(GetInForce() * Time.deltaTime * Math.Abs(inputForce));
+			Physics.Hinge.distance -= Physics.ropeFeedSpeed * Math.Abs(inputForce) * Time.deltaTime;
 		}
 	}
 
@@ -62,11 +62,11 @@ public class PlayerStateActive : PlayerState
 
 	public override void RopeOut(float inputForce)
 	{
-		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, -Physics.ropeDir, Physics.ropeFeedSpeed * 3, Physics.LayerMaskWithoutPlayer);
+		RaycastHit2D hitFeed = Physics2D.Raycast(Physics.Player.transform.position, -Physics.ropeDir, Physics.ropeFeedSpeed * Time.deltaTime * 3, Physics.LayerMaskWithoutPlayer);
 		if (hitFeed.collider == null)
 		{
-			Physics.rb.AddForce(GetOutForce() * Math.Abs(inputForce));
-			Physics.Hinge.distance += Physics.ropeFeedSpeed * Math.Abs(inputForce);
+			Physics.rb.AddForce(GetOutForce() * Time.deltaTime * Math.Abs(inputForce));
+			Physics.Hinge.distance += Physics.ropeFeedSpeed * Math.Abs(inputForce) * Time.deltaTime;
 		}
 	}
 
