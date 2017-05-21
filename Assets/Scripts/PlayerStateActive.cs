@@ -47,27 +47,13 @@ public class PlayerStateActive : PlayerState
 		Physics.rb.AddForce(GetRightForce() * Math.Abs(inputForce) * Time.deltaTime);
 	}
 
-	private void SetHingeDistance(float deltaDistance)
+	private void SetHingeDistanceIfPossible(float deltaDistance)
 	{
-		var prevRopeLength = GetRealRopeLength();
-		Debug.Log("Real: " + prevRopeLength);
+		var prevRopeLength = GetRopeDir().magnitude; //real rope length
 		var newDistance = Physics.Hinge.distance + deltaDistance;
-		//Debug.Log("Desried: " + newDistance);
 		if (newDistance < prevRopeLength + _hingeDeltaDistanceThreshold) {
-			Debug.Log("Change!" + newDistance);
 			Physics.Hinge.distance = newDistance;
 		}
-	}
-
-	private float GetRealRopeLength()
-	{
-		//var hingePoint = Physics.linePoints[1];
-		//var originPos = Physics.Player.transform.position;
-		//var hit = Physics2D.Raycast(hingePoint, -GetRopeDir(), int.MaxValue, Physics.LayerMaskWithoutPlayer);
-		//Vector2 hullPoint = hit.collider.bounds.ClosestPoint(hit.point);
-		//Vector3 hitPoint = new Vector3(hullPoint.x, hullPoint.y);
-		//var ropeLength = Vector2.Distance(hitPoint, hingePoint);
-		return GetRopeDir().magnitude;
 	}
 
 	public override void RopeIn(float inputForce)
@@ -76,7 +62,7 @@ public class PlayerStateActive : PlayerState
 		if (hitFeed.collider == null && Physics.Hinge.distance - Physics.ropeFeedSpeed * Time.deltaTime > Physics.ropeMinLength)
 		{
 			Physics.rb.AddForce(GetInForce() * Time.deltaTime * Math.Abs(inputForce));
-			SetHingeDistance(-Physics.ropeFeedSpeed * Math.Abs(inputForce) * Time.deltaTime);
+			SetHingeDistanceIfPossible(-Physics.ropeFeedSpeed * Math.Abs(inputForce) * Time.deltaTime);
 		}
 	}
 
@@ -96,7 +82,7 @@ public class PlayerStateActive : PlayerState
 		if (hitFeed.collider == null)
 		{
 			Physics.rb.AddForce(GetOutForce() * Time.deltaTime * Math.Abs(inputForce));
-			SetHingeDistance(Physics.ropeFeedSpeed * Math.Abs(inputForce) * Time.deltaTime);
+			SetHingeDistanceIfPossible(Physics.ropeFeedSpeed * Math.Abs(inputForce) * Time.deltaTime);
 		}
 	}
 
@@ -109,7 +95,7 @@ public class PlayerStateActive : PlayerState
 		                  Math.Abs(inputForce) * Time.deltaTime;
 		if (Math.Abs(hingeChange) > _hingeTouchMinThreshold)
 		{
-			SetHingeDistance(hingeChange);
+			SetHingeDistanceIfPossible(hingeChange);
 			Debug.Log("Hinge change: " + hingeChange);
 		}
 	}

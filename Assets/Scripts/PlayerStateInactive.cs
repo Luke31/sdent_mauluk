@@ -101,6 +101,7 @@ public class PlayerStateInactive : PlayerState
 
 	public override void Jump()
 	{
+		EnableShowTarget();
 		Context.SetState(GameStates.Expanding);
 	}
 	public override void AimShootAt(Vector2 direction)
