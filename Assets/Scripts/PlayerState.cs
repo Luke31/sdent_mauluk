@@ -16,6 +16,8 @@ public abstract class PlayerState : IGameControlTarget
 	public abstract void AimRight(float inputForce);
 	public abstract void RopeIn(float inputForce);
 	public abstract void RopeOut(float inputForce);
+	public abstract void DirectionForce(float inputForce, Vector2 direction);
+	public abstract void AimShootAt(Vector2 direction);
 	public abstract void Jump();
 
 	protected GamePhysics Physics;

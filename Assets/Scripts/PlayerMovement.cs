@@ -92,11 +92,22 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		_state.RopeOut(inputForce);
 	}
 
+
+	public void DirectionForce(float inputForce, Vector2 direction)
+	{
+		_state.DirectionForce(inputForce, direction);
+	}
+
 	public void Jump()
 	{
 		_state.Jump();
 	}
-		
+
+	public void AimShootAt(Vector2 direction)
+	{
+		_state.AimShootAt(direction);
+	}
+
 	void OnTriggerEnter2D(Collider2D other) {
 		switch (other.tag) {
 			case "Finish":
@@ -155,6 +166,7 @@ public class PlayerMovement : MonoBehaviour, IGameControlTarget
 		src.Play();
 	}
 
+	
 }
 
 

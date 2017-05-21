@@ -75,6 +75,11 @@ public class PlayerStateExpanding : PlayerState
 		Context.SetState(GameStates.Collapsing);
 	}
 
+	public override void AimShootAt(Vector2 direction)
+	{
+		Context.SetState(GameStates.Collapsing);
+	}
+
 	public override void AimLeft(float inputForce)
 	{}
 
@@ -87,7 +92,8 @@ public class PlayerStateExpanding : PlayerState
 	public override void RopeOut(float inputForce)
 	{}
 
-	
+	public override void DirectionForce(float inputForce, Vector2 direction)
+	{}
 
-	
+
 }

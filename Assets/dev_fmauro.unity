@@ -799,8 +799,8 @@ Light:
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
-  m_Range: 100
-  m_SpotAngle: 30
+  m_Range: 200
+  m_SpotAngle: 100
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -1686,7 +1686,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 69350f2c58a6431479c6665ce52e2a4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2167,8 +2167,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputForceMinThreshold: 0.01
-  sensitivity: 6
+  sensitivity: 3
   gameState: {fileID: 695964130}
+  player: {fileID: 0}
 --- !u!95 &1952089915
 Animator:
   serializedVersion: 3

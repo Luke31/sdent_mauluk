@@ -10,11 +10,11 @@ namespace Assets.Scripts
 	{
 		private readonly float _ropeWidth;
 		private readonly float _ropeMinLength;
-		public int LayerMask { get; set; }
+		public int LayerMaskWithoutPlayer { get; set; }
 		private readonly LineRenderer _lineRenderer;
 		public float ropeMinLength = 1f;
 
-		internal RopeRenderer(LineRenderer lineRenderer, float ropeWidth, float ropeMinLength, int layerMask)
+		internal RopeRenderer(LineRenderer lineRenderer, float ropeWidth, float ropeMinLength, int layerMaskWithoutPlayer)
 		{
 			_lineRenderer = lineRenderer;
 			var renderer = _lineRenderer.GetComponent<Renderer>();
@@ -22,7 +22,7 @@ namespace Assets.Scripts
 			_ropeWidth = ropeWidth;
 			_ropeMinLength = ropeMinLength;
 
-			LayerMask = layerMask;
+			LayerMaskWithoutPlayer = layerMaskWithoutPlayer;
 		}
 
 		internal void ResetRope(Vector3[] linePoints)
@@ -46,7 +46,7 @@ namespace Assets.Scripts
 		internal Vector3 GetHitPoint(Vector3 originPos, Vector3 aimDirection)
 		{
 			RaycastHit2D hit;
-			hit = Physics2D.Raycast(originPos, aimDirection, int.MaxValue, LayerMask);
+			hit = Physics2D.Raycast(originPos, aimDirection, int.MaxValue, LayerMaskWithoutPlayer);
 			if (hit.collider != null)
 			{
 

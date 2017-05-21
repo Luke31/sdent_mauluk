@@ -9,5 +9,7 @@ public interface IGameControlTarget : IEventSystemHandler
 	void AimRight(float inputForce);
 	void RopeIn(float inputForce);
 	void RopeOut(float inputForce);
+	void DirectionForce(float inputForce, Vector2 direction);
+	void AimShootAt(Vector2 direction);
 	void Jump();
 }

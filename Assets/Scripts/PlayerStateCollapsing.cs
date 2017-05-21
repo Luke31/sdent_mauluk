@@ -32,6 +32,8 @@ public class PlayerStateCollapsing : PlayerState
 
 	public override void Jump()
 	{}
+	public override void AimShootAt(Vector2 direction)
+	{}
 	public override void AimLeft(float inputForce)
 	{}
 	public override void AimRight(float inputForce)
@@ -39,6 +41,8 @@ public class PlayerStateCollapsing : PlayerState
 	public override void RopeIn(float inputForce)
 	{}
 	public override void RopeOut(float inputForce)
+	{}
+	public override void DirectionForce(float inputForce, Vector2 direction)
 	{}
 	public override void Update()
 	{}
