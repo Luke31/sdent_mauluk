@@ -555,7 +555,7 @@ MonoBehaviour:
     type: 2}
   offset: {x: 0, y: 0, z: 0}
   tileSize: 3
-  StartLevel: 8
+  StartLevel: -1
 --- !u!114 &695964130
 MonoBehaviour:
   m_ObjectHideFlags: 0
