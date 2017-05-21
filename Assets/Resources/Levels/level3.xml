@@ -846,7 +846,7 @@
   <object id="17" name="deathCircle" type="DeathCircle" x="2944" y="3200" width="480" height="480">
    <ellipse/>
   </object>
-  <object id="19" name="deathCircle" type="DeathCircle" x="4064" y="3200" width="480" height="480">
+  <object id="19" name="deathCircle" type="DeathCircle" x="3936" y="3232" width="480" height="480">
    <ellipse/>
   </object>
   <object id="20" name="deathtTop" type="Death" x="896" y="1696" width="5408" height="64"/>
