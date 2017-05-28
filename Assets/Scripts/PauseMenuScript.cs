@@ -37,4 +37,10 @@ public class PauseMenuScript : MonoBehaviour {
 	{
 		gameState.state = GameState.State.Dead;
 	}
+
+	public void RestartGame()
+	{
+		LevelBuilder.ResetCurLevel();
+		gameState.state = GameState.State.Dead;
+	}
 }

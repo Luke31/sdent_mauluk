@@ -71,6 +71,7 @@ public class GameState : MonoBehaviour {
 				LevelBuilder builder = GetComponent<LevelBuilder>();
 				builder.IncCurLevel();
 				SceneManager.LoadScene("dev_fmauro", LoadSceneMode.Single); //finished
+				
 				Continue();
 			}
 			break;

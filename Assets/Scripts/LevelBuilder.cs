@@ -35,10 +35,8 @@ public class LevelBuilder : MonoBehaviour
 
 	public int GetLevel()
 	{
-		return StartLevel > 0 ? StartLevel : CurrentLevel;
-	} 
-
-	private static int CurrentLevel = 1;
+		return StartLevel > 0 ? StartLevel : PlayerPrefs.HasKey("currentLevel") ? PlayerPrefs.GetInt("currentLevel") : 1;
+	}
 
 	TextAsset GetCurrentLevel()
 	{
@@ -47,7 +45,12 @@ public class LevelBuilder : MonoBehaviour
 
 	public void IncCurLevel()
 	{
-		CurrentLevel++;
+		PlayerPrefs.SetInt("currentLevel", GetLevel() + 1);
+	}
+
+	public static void ResetCurLevel()
+	{
+		PlayerPrefs.SetInt("currentLevel", 1);
 	}
 
 	public void Generate()
