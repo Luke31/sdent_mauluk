@@ -42,7 +42,7 @@ public class PlayerStateExpanding : PlayerState
 			Physics.linePoints[1] = _ropeEnd;
 			Physics._ropeRenderer.Update(Physics.linePoints);
 		}
-		else
+		else if (hitPoint != Vector3.zero)
 		{
 			Physics.linePoints[1].x = hitPoint.x;
 			Physics.linePoints[1].y = hitPoint.y;
