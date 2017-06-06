@@ -9,7 +9,7 @@ public class PlayerStateInactive : PlayerState
 
 	public float aimDistance = 4;
 	public float aimSpeed = 180; //calc use * Time.deltaTime
-	public float aimMaxAngle = 90f;
+	public float aimMaxAngle = 100f;
 	private bool _showTarget;
 
 	Vector2 aimDirection;
